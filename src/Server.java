@@ -1,6 +1,6 @@
 import java.net.*;
 import java.io.IOException;
-import java.io;
+import java.lang.System.*;
 
 public class Server extends Throwable{
     public static void main(String[] args) throws IOException{
@@ -28,7 +28,7 @@ public class Server extends Throwable{
     }
 
     public boolean validatePort(String args[]){
-        if(args != 2){
+        if(args.length != 2){
             System.err.println("java Server <port_number>");
             return false;
         }else{
