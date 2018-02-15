@@ -1,5 +1,6 @@
 import java.net.*;
 import java.io.IOException;
+import java.io;
 
 public class Server extends Throwable{
     public static void main(String[] args) throws IOException{
@@ -24,5 +25,14 @@ public class Server extends Throwable{
         String received = new String(packet.getData());
         System.out.println("Echoed Message: " + received);
         socket.close();
+    }
+
+    public boolean validatePort(String args[]){
+        if(args != 2){
+            System.err.println("java Server <port_number>");
+            return false;
+        }else{
+            return true;
+        }
     }
 }
