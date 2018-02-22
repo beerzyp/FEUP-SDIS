@@ -39,6 +39,12 @@ public class Client extends Throwable {
     }
 
     // send request
+    
+    /*
+    Implementação Lógica,
+    O servidor fica à espera das requests do Cliente, na socket criada por Server na porta estática definida pelo Server, 
+    quando o Server responder, não responde para a mesma porta, responde para a porta do cliente, com socket.getPort();
+    */
     public static void sendRequest(DatagramSocket socket, String ans) throws IOException{
         InetAddress address = InetAddress.getLocalHost();
         //correto
