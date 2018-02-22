@@ -4,12 +4,11 @@ import java.io.IOException;
 import java.lang.System.*;
 import java.lang.Integer;
 
-import Server;
+
 
 //
 public class Client extends Throwable {
 
-    public static int port = 4445; // server port
 
     public static void main(String[] args) throws IOException {
         if(args.length != 4){
@@ -17,25 +16,23 @@ public class Client extends Throwable {
             return;
         }
 
-        /*
-        int port;
+
         InetAddress address;
-        DatagramSocket socket = null;
         DatagramPacket packet;
         byte[] sendBuf = new byte[256];
-        */
 
-        /*
+
+
         String hostname = args[0];
         System.out.println(hostname+"\n");
 
         int port = Integer.parseInt(args[1]);
         System.out.println(port+"\n");
-        */
+
 
         DatagramSocket socket = new DatagramSocket();
 
-        sendRequest(socket, "abs");
+        sendRequest(socket, "abs",port);
     }
 
     // send request
@@ -45,14 +42,21 @@ public class Client extends Throwable {
     O servidor fica à espera das requests do Cliente, na socket criada por Server na porta estática definida pelo Server, 
     quando o Server responder, não responde para a mesma porta, responde para a porta do cliente, com socket.getPort();
     */
-    public static void sendRequest(DatagramSocket socket, String ans) throws IOException{
+    public static void sendRequest(DatagramSocket socket, String ans, int port) throws IOException{
         InetAddress address = InetAddress.getLocalHost();
         //correto
         //byte[] sbuf = ans.getBytes();
         //try
-        byte[] rbuf = {'1','2'};
-        DatagramPacket packet = new DatagramPacket(rbuf, rbuf.length,address, Server.port); //port
-        socket.send(packet);
+        byte[] rbuf = {'A','b'};
+        DatagramPacket packet = new DatagramPacket(rbuf, rbuf.length,address, port); //port
+
+        try {
+            socket.send(packet);
+        }catch (IOException e){
+            System.err.println("Socket error");
+            throw new IOException("Socket error");
+        }
+
     }
 
     // display response
