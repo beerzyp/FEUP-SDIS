@@ -1,17 +1,16 @@
-import java.net.*;
-import java.io.*;
 import java.io.IOException;
-import java.lang.System.*;
-import java.lang.Integer;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 
-
+import java.lang.String;
 
 //
 public class Client extends Throwable {
 
 
     public static void main(String[] args) throws IOException {
-        if(args.length != 4){
+        if(args.length < 4){
             System.err.println("Usage: java Client <host_name> <port_number> <oper> <opnd>");
             return;
         }
@@ -21,36 +20,49 @@ public class Client extends Throwable {
         DatagramPacket packet;
         byte[] sendBuf = new byte[256];
 
-
-
         String hostname = args[0];
-        System.out.println(hostname+"\n");
+
+        //System.out.println(hostname+"\n");
 
         int port = Integer.parseInt(args[1]);
-        System.out.println(port+"\n");
+        //System.out.println(port+"\n");
+
+        String oper = args[2];
+        System.out.println(oper+"\n");
+        String opnd=args[3];
+        System.out.println(opnd+"\n");
+        String opndName="";
+        if(args.length>4)
+            {opndName=args[4];}//sSystem.out.println(opndName);}
 
 
         DatagramSocket socket = new DatagramSocket();
+        if(oper.equals("REGISTER")){
+            sendRequest(socket,"REGISTER "+opnd+ " "+ opndName,port,hostname);
+            System.out.println("entrou");
+        }
+        else if(oper.equals("LOOKUP")){
+            sendRequest(socket,"LOOKUP "+opnd,port,hostname);
+           // System.out.println("entrou");
+        }
+        else{ System.out.println("specify operation");System.exit(0);}
 
-        sendRequest(socket, "abs",port);
     }
 
     // send request
-    
+
     /*
     Implementação Lógica,
-    O servidor fica à espera das requests do Cliente, na socket criada por Server na porta estática definida pelo Server, 
+    O servidor fica à espera das requests do Cliente, na socket criada por Server na porta estática definida pelo Server,
     quando o Server responder, não responde para a mesma porta, responde para a porta do cliente, com socket.getPort();
     */
-    public static void sendRequest(DatagramSocket socket, String ans, int port) throws IOException{
-        InetAddress address = InetAddress.getLocalHost();
-        //correto
-        //byte[] sbuf = ans.getBytes();
-        //try
-        byte[] rbuf = {'A','b'};
-        DatagramPacket packet = new DatagramPacket(rbuf, rbuf.length,address, port); //port
+    public static void sendRequest(DatagramSocket socket, String ans, int port,String hostname) throws IOException{
+        InetAddress address = InetAddress.getByName(hostname);
 
+
+        byte[] rbuf = ans.getBytes();
         try {
+            DatagramPacket packet = new DatagramPacket(rbuf, rbuf.length,address, port); //port
             socket.send(packet);
         }catch (IOException e){
             System.err.println("Socket error");

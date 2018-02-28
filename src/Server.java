@@ -1,7 +1,6 @@
 import java.net.*;
-import java.io.*;
 import java.io.IOException;
-import java.lang.System.*;
+import java.lang.String;
 
 /*
 Compilar: javac Server.java
@@ -18,14 +17,20 @@ public class Server extends Throwable{
             return;
         }
 
-        DatagramSocket socket = new DatagramSocket(port);//4445
 
-        getResponse(socket);
+        DatagramSocket socket = new DatagramSocket(port);//4445
+        try {
+            getResponse(socket);
+        }catch(IOException e){
+            System.err.println("Socket error");
+            System.exit(1);
+        }
+
     }
 
     // send request
     public static void sendRequest(DatagramSocket socket, String ans) throws IOException{
-       // System.out.println("xbxbxbxb 2");
+        // System.out.println("xbxbxbxb 2");
         byte[] sbuf = ans.getBytes();
         InetAddress address = InetAddress.getLocalHost();
         DatagramPacket packet = new DatagramPacket(sbuf, sbuf.length,address, port); //4445
@@ -54,7 +59,7 @@ public class Server extends Throwable{
                 //String ans = new String(packet.getData(),0,packet.getLength());
                 System.out.println(packet.getData().length);
                 System.out.println(packet.getData()[0]);
-               // sendRequest(socket,ans);
+                // sendRequest(socket,ans);
             }catch (IOException e){
                 System.err.println("Socket error");
                 throw new IOException("Socket error");
