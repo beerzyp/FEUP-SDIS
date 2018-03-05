@@ -57,8 +57,13 @@ public class Server extends Throwable{
                 socket.receive(packet);
 
                 //String ans = new String(packet.getData(),0,packet.getLength());
-                System.out.println(packet.getData().length);
-                System.out.println(packet.getData()[0]);
+                int i=0;
+                while(i<rbuf.length){
+                    if(packet.getData()[i]==0) break;
+                    System.out.println((char)packet.getData()[i]);
+
+                    i++;
+                }
                 // sendRequest(socket,ans);
             }catch (IOException e){
                 System.err.println("Socket error");

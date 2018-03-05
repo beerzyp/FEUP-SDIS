@@ -33,7 +33,7 @@ public class Client extends Throwable {
         System.out.println(opnd+"\n");
         String opndName="";
         if(args.length>4)
-            {opndName=args[4];}//sSystem.out.println(opndName);}
+        {opndName=args[4];}//sSystem.out.println(opndName);}
 
 
         DatagramSocket socket = new DatagramSocket();
@@ -43,7 +43,7 @@ public class Client extends Throwable {
         }
         else if(oper.equals("LOOKUP")){
             sendRequest(socket,"LOOKUP "+opnd,port,hostname);
-           // System.out.println("entrou");
+            // System.out.println("entrou");
         }
         else{ System.out.println("specify operation");System.exit(0);}
 
