@@ -1,7 +1,6 @@
-import java.net.*;
 import java.io.IOException;
-import java.lang.String;
 import java.util.Hashtable;
+import java.net.*;
 
 /*
 Compilar: javac Server.java
@@ -9,42 +8,52 @@ Correr: java Filename
  */
 
 public class Server extends Throwable{
+
+    // Hashtable<Plate, Owner>
     private static Hashtable<String, String> data_base;
 
-    // server port
     /*
-    public static int port = 4445;
+    Dados
      */
+    //<srvc_port> is the port number where the server provides the service
+    public static int server_port;
+
+    //<mcast_addr> is the IP address of the multicast group used by the server to advertise its service.
+    public static InetAddress multicast_address;
+
+    //<mcast_port> is the multicast group port number used by the server to advertise its service.
+    public static int multicast_port;
+
+    /*
+    Multicast
+     */
+    static MulticastSocket multicast_socket;
 
     public static void main(String[] args) throws IOException{
-        if ((args.length >= 4) && (args.length<3)) {
-            /*
-            System.out.println("Usage: java Echo <hostname> <string to echo>");
-             */
+        if ((args.length > 3) && (args.length < 3)) {
             System.out.println("java Server <srvc_port> <mcast_addr> <mcast_port>");
             return;
         }
 
-        //<srvc_port> is the port number where the server provides the service
-        String srvc_port = args[0];
-        Integer server_port = Integer.parseInt(srvc_port);
-
-        //<mcast_addr> is the IP address of the multicast group used by the server to advertise its service.
-        String mcast_addr = args[1];
-        Integer multicast_address = Integer.parseInt(mcast_addr);
-
-        //<mcast_port> is the multicast group port number used by the server to advertise its service.
-        String mcast_port = args[2];
-        Integer multicast_port = Integer.parseInt(mcast_port);
+        this.server_port = Integer.parseInt(args[0]);
+        this.multicast_address = InetAdress.getByName(args[1]);
+        this.multicast_port = Integer.parseInt(args[2]);
 
         data_base= new Hashtable<String,String>();
 
-        //server port 4445
-        DatagramSocket socket = new DatagramSocket(server_port);
-        MulticastSocket multicast_socket = new MulticastSocket(multicast_address);
+        DatagramSocket socket = new DatagramSocket(this.server_port);
+        multicast_socket = new MulticastSocket(this.multicast_address);
+        multicast_socket.setTimeToLeave(10);
+
+        /*
+        timer
+         */
 
         try {
             getResponse(socket);
+            /*
+            getResponse(socket, multicast_socket, srvc_port, mcast_addr, mcast_port);
+             */
         }catch(IOException e){
             System.err.println("Socket error");
             System.exit(1);
@@ -65,6 +74,10 @@ public class Server extends Throwable{
     }
 
     // get response
+    /*
+    public static void getResponse(DatagramSocket socket, MulticastSocket multicast_socket, String srvc_port,
+                String mcast_addr, String mcast_port) throws IOException{
+    */
     public static void getResponse(DatagramSocket socket) throws IOException{
         while (true) {
             byte[] rbuf = new byte[256];

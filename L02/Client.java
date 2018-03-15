@@ -3,6 +3,20 @@ import java.lang.String;
 import java.net.*;
 
 public class Client extends Throwable {
+    //<mcast_addr> is the IP address of the multicast group used by the server to advertise its service;
+    public static String multicast_address;
+
+    //<mcast_port> is the port number of the multicast group used by the server to advertise its service;
+    public static InetAddress multicast_port;
+
+    //<oper> is ''register'' or ''lookup'', depending on the operation to invoke;
+    public static String oper;
+
+    //<opnd> * is the list of operands of the specified operation:
+    //<plate number> <owner name>, for register;
+    //<plate number>, for lookup.
+    public static String opnd;
+
 
     public static void main(String[] args) throws IOException {
         if(args.length < 4){
@@ -16,33 +30,6 @@ public class Client extends Throwable {
         InetAddress address;
         DatagramPacket packet;
         byte[] sendBuf = new byte[256];
-
-        /*
-        String hostname = args[0];
-        int port = Integer.parseInt(args[1]);
-        String oper = args[2];
-        String opnd = args[3];
-        String opndName = "";
-        if(args.length > 4) {
-            opndName = args[4];
-            System.out.println(opndName);
-        }
-        */
-
-        //<mcast_addr> is the IP address of the multicast group used by the server to advertise its service;
-        String mcast_addr = args[0];
-        Integer multicast_adress = Integer.parserInteger(mcast_addr);
-
-        //<mcast_port> is the port number of the multicast group used by the server to advertise its service;
-        String mcast_port = args[1];
-
-        //<oper> is ''register'' or ''lookup'', depending on the operation to invoke;
-        String oper = args[2];
-
-        //<opnd> * is the list of operands of the specified operation:
-        //<plate number> <owner name>, for register;
-        //<plate number>, for lookup.
-        String opnd = args[3];
 
         DatagramSocket socket = new DatagramSocket();
 
