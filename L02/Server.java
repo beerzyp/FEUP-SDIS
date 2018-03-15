@@ -10,16 +10,39 @@ Correr: java Filename
 
 public class Server extends Throwable{
     private static Hashtable<String, String> data_base;
-    public static int port = 4445; // server port
+
+    // server port
+    /*
+    public static int port = 4445;
+     */
 
     public static void main(String[] args) throws IOException{
-        if (args.length != 2) {
+        if ((args.length >= 4) && (args.length<3)) {
+            /*
             System.out.println("Usage: java Echo <hostname> <string to echo>");
+             */
+            System.out.println("java Server <srvc_port> <mcast_addr> <mcast_port>");
             return;
         }
+
+        //<srvc_port> is the port number where the server provides the service
+        String srvc_port = args[0];
+        Integer server_port = Integer.parseInt(srvc_port);
+
+        //<mcast_addr> is the IP address of the multicast group used by the server to advertise its service.
+        String mcast_addr = args[1];
+        Integer multicast_address = Integer.parseInt(mcast_addr);
+
+        //<mcast_port> is the multicast group port number used by the server to advertise its service.
+        String mcast_port = args[2];
+        Integer multicast_port = Integer.parseInt(mcast_port);
+
         data_base= new Hashtable<String,String>();
 
-        DatagramSocket socket = new DatagramSocket(port);//4445
+        //server port 4445
+        DatagramSocket socket = new DatagramSocket(server_port);
+        MulticastSocket multicast_socket = new MulticastSocket(multicast_address);
+
         try {
             getResponse(socket);
         }catch(IOException e){
@@ -31,7 +54,6 @@ public class Server extends Throwable{
 
     // send request
     public static void sendRequest(DatagramSocket socket, String ans) throws IOException{
-        // System.out.println("xbxbxbxb 2");
 
     }
 
@@ -41,6 +63,7 @@ public class Server extends Throwable{
         System.out.println("Echoed Message: " + received);
         socket.close();
     }
+
     // get response
     public static void getResponse(DatagramSocket socket) throws IOException{
         while (true) {
@@ -48,7 +71,6 @@ public class Server extends Throwable{
             DatagramPacket packet = new DatagramPacket(rbuf, rbuf.length);
             socket.receive(packet);
 
-            //String ans = new String(packet.getData(),0,packet.getLength());
             int i=0;
 
             //handle Request
@@ -58,18 +80,17 @@ public class Server extends Throwable{
             String response=handleRequest(ans);
             System.out.println(response);
             byte[] sendBuffer= new byte[512];
+
             //send response
             sendBuffer=response.getBytes();
 
             DatagramPacket sendPacket= new DatagramPacket(sendBuffer,sendBuffer.length,address,recievePort);
             socket.send(packet);
-
         }
     }
 
     private static String handleRequest(String request) {
         String[] array = request.split(" ");
-
         String request_type = array[0];
         String plate = array[1];
 
@@ -77,19 +98,21 @@ public class Server extends Throwable{
             if(!data_base.containsKey(plate)) {
                 String name = "";
 
-                for(int i =2; i < array.length; i++)
+                for(int i =2; i < array.length; i++) {
                     name += array[i] + " ";
+                }
 
                 name = name.substring(0, name.length() - 1);
 
                 data_base.put(plate, name);
                 return Integer.toString(data_base.size());
 
-            }else return "-1";
-
+            }else {
+                return "-1";
+            }
         }else if(request_type.equals("LOOKUP")) {
-
             System.out.println("database size: " + data_base.get(plate));
+
             if(data_base.contains(plate)) {
                 return data_base.get(plate);
             }else return "NOT_FOUND";
