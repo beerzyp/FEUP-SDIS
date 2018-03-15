@@ -4,11 +4,11 @@ import java.lang.String;
 import java.util.Hashtable;
 
 /*
-Compilar: javac Server.java
+Compilar: javac Servidor.java
 Correr: java Filename
  */
 
-public class Server extends Throwable{
+public class Servidor extends Throwable{
     private static Hashtable<String, String> data_base;
     public static int port = 4445; // server port
 

@@ -17,13 +17,12 @@ public class Client extends Throwable {
     //<plate number>, for lookup.
     public static String opnd;
 
-
     public static void main(String[] args) throws IOException {
         if(args.length < 4){
             /*
-            System.err.println("Usage: java Client <host_name> <port_number> <oper> <opnd>");
+            System.err.println("Usage: java Cliente <host_name> <port_number> <oper> <opnd>");
              */
-            System.err.println("java Client <mcast_addr> <mcast_port> <oper> <opnd> *");
+            System.err.println("java Cliente <mcast_addr> <mcast_port> <oper> <opnd> *");
             return;
         }
 
@@ -60,8 +59,8 @@ public class Client extends Throwable {
     send request
 
     Implementação Lógica,
-    O servidor fica à espera das requests do Cliente, na socket criada por Server na porta estática definida pelo Server,
-    quando o Server responder, não responde para a mesma porta, responde para a porta do cliente, com socket.getPort();
+    O servidor fica à espera das requests do Cliente, na socket criada por Servidor na porta estática definida pelo Servidor,
+    quando o Servidor responder, não responde para a mesma porta, responde para a porta do cliente, com socket.getPort();
     */
     public static void sendRequest(DatagramSocket socket, String ans, int port,String hostname) throws IOException{
         InetAddress address = InetAddress.getByName(hostname);

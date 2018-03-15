@@ -1,9 +1,10 @@
 import java.io.IOException;
 import java.util.Hashtable;
 import java.net.*;
+import java.lang.*;
 
 /*
-Compilar: javac Server.java
+Compilar: javac Servidor.java
 Correr: java Filename
  */
 
@@ -14,6 +15,9 @@ public class Server extends Throwable{
 
     /*
     Dados
+     */
+    /**
+     * não precisa de this
      */
     //<srvc_port> is the port number where the server provides the service
     public static int server_port;
@@ -31,19 +35,19 @@ public class Server extends Throwable{
 
     public static void main(String[] args) throws IOException{
         if ((args.length > 3) && (args.length < 3)) {
-            System.out.println("java Server <srvc_port> <mcast_addr> <mcast_port>");
+            System.out.println("java Servidor <srvc_port> <mcast_addr> <mcast_port>");
             return;
         }
 
-        this.server_port = Integer.parseInt(args[0]);
-        this.multicast_address = InetAdress.getByName(args[1]);
-        this.multicast_port = Integer.parseInt(args[2]);
+        server_port = Integer.parseInt(args[0]);
+        multicast_address = InetAddress.getByName(args[1]);
+        multicast_port = Integer.parseInt(args[2]);
 
         data_base= new Hashtable<String,String>();
 
-        DatagramSocket socket = new DatagramSocket(this.server_port);
-        multicast_socket = new MulticastSocket(this.multicast_address);
-        multicast_socket.setTimeToLeave(10);
+        DatagramSocket socket = new DatagramSocket(server_port);
+        multicast_socket = new MulticastSocket(multicast_port);
+        multicast_socket.setTimeToLive(10);
 
         /*
         timer
