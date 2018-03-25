@@ -14,13 +14,14 @@ public class Peer {
         InetAddress multicast_address = InetAddress.getByName(args[0]);
         int multicast_port = Integer.parseInt(args[1]);
         Peer peerClient = new Peer(multicast_address,multicast_port);
-        peerClient.initiatorPeer.sendMessage();
-        peerClient.connectingPeer.recieveMessage();
+        //peerClient.initiatorPeer.sendMessage();
+        //peerClient.connectingPeer.recieveMessage();
     }
 
     public Peer(InetAddress address,int mcastPort) throws IOException{
         initiatorPeer = new PeerChannel(address,mcastPort,this);
-        connectingPeer = new PeerChannel(address,mcastPort,this);
+        PeerChannel connectingPeer = new PeerChannel(address,mcastPort,this);
+        //connectingPeer.mcSocketJoin();
     }
 
     public void incrementPeerId(){
