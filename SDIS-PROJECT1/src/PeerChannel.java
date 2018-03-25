@@ -9,7 +9,7 @@ public class PeerChannel {
     private final int mcPort;
     private MulticastSocket mcSocket;
     private String peerName;
-    private static Controller controller;
+    private static ControllerInterface controllerInterface;
     private static PeerInfo peerInfo;
 
     public PeerChannel(InetAddress mcAddr, int mcastPort,PeerInfo newPeer) throws IOException{
@@ -22,7 +22,6 @@ public class PeerChannel {
             mcSocket = new MulticastSocket(mcastPort);
             //Join the multi-cast socket
             mcSocket.joinGroup(this.mcAddr);
-            mcSocket.setTimeToLive(1);
 
         }
         catch (SocketException e){System.out.println("socket creation error");}
@@ -30,8 +29,8 @@ public class PeerChannel {
 
     }
 
-    void setMcController(Controller controller){
-        this.controller=controller;
+    void setMcController(ControllerInterface controllerInterface){
+        this.controllerInterface = controllerInterface;
     }
     boolean sendMessage(byte[] s_buffer) throws IOException{
         DatagramPacket sendPacket = new DatagramPacket(s_buffer, s_buffer.length, this.mcAddr, this.mcPort);
@@ -50,6 +49,7 @@ public class PeerChannel {
             while(true) {
                 try {
                     this.mcSocket.receive(receivePacket);
+                    //calls message handler
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -61,5 +61,9 @@ public class PeerChannel {
         Thread thread = new Thread(task);
         thread.start();
         System.out.println("recieved message!");
+    }
+
+   int close(){
+    return 0;
     }
 }
