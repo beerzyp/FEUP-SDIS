@@ -3,6 +3,8 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 
 
 public class Client {
@@ -18,6 +20,17 @@ public class Client {
         //STATE
         String peer_ap=args[0];
         String sub_protocol= args[1];
+
+
+        try {
+            // create a remote object registry that accepts calls on a specific port.
+            Registry registry = LocateRegistry.getRegistry();
+            //Returns the remote reference bound to the specified name in this registry.
+            initiatorPeer = (RMI) registry.lookup(peer_ap);
+        } catch (Exception e) {
+            System.err.println("Client exception: " + e.toString());
+            e.printStackTrace();
+        }
         try {
             switch (sub_protocol) {
                 case "BACKUP":
