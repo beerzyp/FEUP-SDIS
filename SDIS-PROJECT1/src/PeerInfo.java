@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 
@@ -15,25 +16,19 @@ http://cs.berry.edu/~nhamid/p2p/
 8. peer id2 sends msg
  */
 public class PeerInfo {
-    public PeerConnection initiatorPeer;
-    public PeerConnection connectingPeer;
-    public MulticastSocket mcSocket;
+    public PeerConnection controlCh;
+    public PeerConnection backupCh;
+    public PeerConnection restoreCh;
     public static int peerID = 0;
 
-    public static void main(String[] args) throws IOException{
-        if(args.length!=2) {System.out.println("Usage <");return;}
-        InetAddress multicast_address = InetAddress.getByName(args[0]);
-        int multicast_port = Integer.parseInt(args[1]);
+    public PeerInfo(String serverId,String protocolVersion, String serviceAccessPoint, InetAddress mcAddr, int mcPort,
+                    InetAddress mdbAddr, int mdbPort, InetAddress mdrAddr, int mdrPort) throws IOException{
+        controlCh = new PeerConnection(mcAddr,mcPort,this);
+        backupCh= new PeerConnection(mcAddr,mcPort,this);
+        restoreCh = new PeerConnection(mcAddr,mcPort,this);
+        //each connection has 1 thread listener
 
-        PeerInfo peerInfoClient = new PeerInfo(multicast_address,multicast_port);
-        byte[] msg={'O','L','A'};
-        peerInfoClient.initiatorPeer.sendMessage(msg);
-        peerInfoClient.connectingPeer.recieveMessage();
-    }
-
-    public PeerInfo(InetAddress address, int mcastPort) throws IOException{
-        initiatorPeer = new PeerConnection(address,mcastPort,this);
-        connectingPeer = new PeerConnection(address,mcastPort,this);
+        PeerRmi initiatorPeer = new PeerRmi(this);
     }
 
     public void incrementPeerId(){
@@ -41,4 +36,7 @@ public class PeerInfo {
     }
 
 
+    public void messageHandler(DatagramPacket packet) {
+
+    }
 }
