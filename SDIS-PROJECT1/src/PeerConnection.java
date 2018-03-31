@@ -11,6 +11,7 @@ public class PeerConnection {
     private final InetAddress mcAddr;
     private final int mcPort;
     private MulticastSocket mcSocket;
+    private DatagramPacket recievedPacket;
 
     //from peerInfo
     private final PeerInfo peerInfo;
@@ -45,22 +46,29 @@ public class PeerConnection {
             return false;
         }
 
-        System.out.println("\nmessage sent");
+       // System.out.println("\nmessage sent");
 
         return true;
     }
+    public DatagramPacket getRecievedPacket(){
+        return this.recievedPacket;
 
+    }
     public void recieveMessage() throws IOException{
         byte[] r_buffer = new byte[1024];
         DatagramPacket receivePacket = new DatagramPacket(r_buffer, r_buffer.length);
         Runnable runnable = () -> {
-            while(true){
+            while(true) {
                 try {
                     this.mcSocket.receive(receivePacket);
+                    this.recievedPacket=receivePacket;
+                    //System.out.println("\nmessage received " + ((String) Integer.toString(recievedPacket.getData()[recievedPacket.getData().length-1]))
+                           // +Integer.toString(recievedPacket.getData()[recievedPacket.getData().length-2])+Integer.toString(recievedPacket.getData()[recievedPacket.getData().length-3]+Integer.toString(recievedPacket.getData()[recievedPacket.getData().length-4]);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
+
         };
 
         Thread thread = new Thread(runnable);

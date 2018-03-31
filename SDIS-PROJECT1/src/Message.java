@@ -15,9 +15,13 @@ public class Message {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         String join = String.join(msgType, versionId, senderID, fileID, chunkNo, Integer.toString(repDeg));
         byte[] body = join.getBytes();
-        byteArrayOutputStream.write(body, 0, body.length);
         byte[] header = CRLF.getBytes();
-        byteArrayOutputStream.write(header, body.length, header.length);
+        byte[] c = new byte[body.length + header.length];
+        System.arraycopy(body, 0, c, 0, body.length);
+        System.arraycopy(header, 0, c, body.length, header.length);
+        byteArrayOutputStream.write(c, 0, c.length);
+
+
         this.finalMsg = byteArrayOutputStream.toByteArray();
     }
 
