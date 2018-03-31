@@ -3,11 +3,12 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
-
 public class Client {
+
     private static RMI initiatorPeer;
 
     public static void main(String[] args) throws IOException {
@@ -17,9 +18,10 @@ public class Client {
             System.out.println("java Client <peear_app> <sub_protocol> <opnd_1> <opnd_2>");
             return;
         }
+
         //STATE
-        String peer_ap=args[0];
-        String sub_protocol= args[1];
+        String peer_ap = args[0];
+        String sub_protocol = args[1];
 
 
         try {
@@ -31,30 +33,34 @@ public class Client {
             System.err.println("Client exception: " + e.toString());
             e.printStackTrace();
         }
+
+        String file;
+
         try {
             switch (sub_protocol) {
                 case "BACKUP":
-                    String file=args[2];
+                    file=args[2];
                     int replicationDeg=Integer.parseInt(args[3]);
-                    System.out.println("backup op");
+                    System.out.println("BACKUP op");
                     initiatorPeer.backup(file,replicationDeg);
                     break;
                 case "RESTORE":
-                    System.out.println("backup op");
+                    System.out.println("RESTORE op");
                     break;
                 case "DELETE":
-                    System.out.println("backup op");
+                    file=args[2];
+                    System.out.println("DELETE op");
+                    initiatorPeer.delete(file);
                     break;
                 case "RECLAIM":
-                    System.out.println("backup op");
+                    System.out.println("RECLAIM op");
                     break;
                 case "STATE":
-                    System.out.println("backup op");
+                    System.out.println("STATE op");
                     break;
             }
+        } catch(IllegalArgumentException e){
+            e.printStackTrace();
         }
-        catch(IllegalArgumentException e){e.printStackTrace();}
-
-
     }
 }
