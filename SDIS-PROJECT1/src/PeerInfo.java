@@ -25,12 +25,15 @@ public class PeerInfo {
 
     public PeerInfo(String serverId, String protocolVersion, String serviceAccessPoint, InetAddress mcAddr, int mcPort,
                     InetAddress mdbAddr, int mdbPort, InetAddress mdrAddr, int mdrPort) throws IOException{
+        System.out.println("Peer " + this.peerID + " is connecting to network");
         controlCh = new PeerConnection(mcAddr, mcPort, this);
         backupCh= new PeerConnection(mdbAddr, mdbPort, this);
         restoreCh = new PeerConnection(mdrAddr, mdrPort, this);
+
         //each connection has 1 thread listener
 
         PeerRmi initiatorPeer = new PeerRmi(this);
+        this.incrementPeerId();
     }
 
     public void incrementPeerId(){

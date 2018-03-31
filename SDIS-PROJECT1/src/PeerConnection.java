@@ -27,7 +27,6 @@ public class PeerConnection {
             mcSocket = new MulticastSocket(mcastPort);
             //Join the multi-cast socket
             mcSocket.joinGroup(this.mcAddr);
-            System.out.println(peerName);
 
         } catch (SocketException e){
             System.out.println("socket creation error");

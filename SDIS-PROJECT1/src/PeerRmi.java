@@ -9,12 +9,10 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 public class PeerRmi extends UnicastRemoteObject implements RMI {
-    Utilities util;
     private final PeerInfo peer;
 
     protected PeerRmi(PeerInfo peer) throws RemoteException {
         this.peer = peer;
-        this.util = new Utilities();
     }
 
     @Override
@@ -35,9 +33,9 @@ public class PeerRmi extends UnicastRemoteObject implements RMI {
         System.out.println("New backup request for file " + filepath);
         int chunkNo = 0;
         int readableBytes = -1;
-        byte[] chunk;
-
-        String fileId = this.util.getSha256(filepath);
+        byte[] chunk = new byte[64000];
+        Chunk newChunk = new Chunk("null",0,replicationDegree,chunk);
+        String fileId = newChunk.getSha256(filepath);
 
         while (file.available() > 0) {
             readableBytes = file.available();
