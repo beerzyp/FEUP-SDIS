@@ -32,7 +32,7 @@ public class PeerInfo {
 
         //each connection has 1 thread listener
 
-        PeerRmi initiatorPeer = new PeerRmi(this);
+        //PeerRmi initiatorPeer = new PeerRmi(this);
         this.incrementPeerId();
     }
 

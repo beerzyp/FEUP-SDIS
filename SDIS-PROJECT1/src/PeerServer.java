@@ -8,7 +8,7 @@ class PeerServer {
             throw new IllegalArgumentException("\nUsage: java PeerServer <protocolVersion> <serverId>  <accessPoint>" +
                     " <mcAddr> <mcPort> <mdbAddr> <mdbPort> <mdrAddr> <mdrPort>");
         }
-
+        /*
         String protocolVersion = args[0];
         String serverId = args[1];
         String serviceAccessPoint = args[2];
@@ -23,6 +23,16 @@ class PeerServer {
         int mdrPort = Integer.parseInt(args[8]);
 
         PeerInfo peerService = new PeerInfo(serverId, protocolVersion, serviceAccessPoint, mcAddr, mcPort,
-                mdbAddr, mdbPort, mdrAddr, mdrPort);
+                mdbAddr, mdbPort, mdrAddr, mdrPort);*/
+        /*
+        PeerLauncher 1.0 1 peer1 224.0.0.0 4445 224.0.0.1  4446 224.0.0.2 2000
+         */
+
+        PeerInfo peerinfo1= new PeerInfo("0", "1", "1",InetAddress.getByName("224.0.0.0"),4445 ,
+                InetAddress.getByName("224.0.0.1"), 4446,InetAddress.getByName("224.0.0.2"),4447);
+        PeerInfo peerinfo2= new PeerInfo("0", "1", "1",InetAddress.getByName("224.0.0.0"),4445 ,
+                InetAddress.getByName("224.0.0.1"), 4446,InetAddress.getByName("224.0.0.2"),4447);
+        PeerInfo peerinfo3= new PeerInfo("0", "1", "1",InetAddress.getByName("224.0.0.0"),4445 ,
+                InetAddress.getByName("224.0.0.1"), 4446,InetAddress.getByName("224.0.0.2"),4447);
     }
 }

@@ -17,7 +17,7 @@ public class PeerConnection {
     private String peerName;
 
     public PeerConnection(InetAddress mcAddr, int mcastPort, PeerInfo newPeerInfo) throws IOException{
-    this.mcAddr=InetAddress.getByName("228.5.6.7"); //localhost is not in range in multicasting TODO: address comes from cmd
+    this.mcAddr=mcAddr; //localhost is not in range in multicasting TODO: address comes from cmd
     this.mcPort=mcastPort;
     this.peerInfo=newPeerInfo;
 
