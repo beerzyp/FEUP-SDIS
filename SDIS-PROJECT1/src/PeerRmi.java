@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.*;
 
 import java.nio.file.Paths;
 import java.rmi.RemoteException;
@@ -10,8 +11,9 @@ import java.rmi.server.UnicastRemoteObject;
 public class PeerRmi extends UnicastRemoteObject implements RMI {
     Utilities util;
     private final PeerInfo peer;
+
     protected PeerRmi(PeerInfo peer) throws RemoteException {
-        this.peer=peer;
+        this.peer = peer;
         this.util = new Utilities();
     }
 
@@ -22,7 +24,6 @@ public class PeerRmi extends UnicastRemoteObject implements RMI {
         }
 
         FileInputStream file;
-
 
         try {
             file = new FileInputStream(filepath);
@@ -36,7 +37,7 @@ public class PeerRmi extends UnicastRemoteObject implements RMI {
         int readableBytes = -1;
         byte[] chunk;
 
-        String fileId =this.util.getSha256(filepath);
+        String fileId = this.util.getSha256(filepath);
 
         while (file.available() > 0) {
             readableBytes = file.available();
@@ -72,7 +73,12 @@ public class PeerRmi extends UnicastRemoteObject implements RMI {
 
     @Override
     public void delete(String pathname) throws IOException {
+        if(pathname == null){
+            throw new IllegalArgumentException("Invalid arguments for delete");
+        }
 
+        //String filepath = peer.ge
+        //String fileId = this.util.getSha256(filepath);
     }
 
     @Override

@@ -15,17 +15,19 @@ http://cs.berry.edu/~nhamid/p2p/
 7. peer id1 accepts connection and starts handler thread
 8. peer id2 sends msg
  */
+
 public class PeerInfo {
+
     public PeerConnection controlCh;
     public PeerConnection backupCh;
     public PeerConnection restoreCh;
     public static int peerID = 0;
 
-    public PeerInfo(String serverId,String protocolVersion, String serviceAccessPoint, InetAddress mcAddr, int mcPort,
+    public PeerInfo(String serverId, String protocolVersion, String serviceAccessPoint, InetAddress mcAddr, int mcPort,
                     InetAddress mdbAddr, int mdbPort, InetAddress mdrAddr, int mdrPort) throws IOException{
-        controlCh = new PeerConnection(mcAddr,mcPort,this);
-        backupCh= new PeerConnection(mdbAddr,mdbPort,this);
-        restoreCh = new PeerConnection(mdrAddr,mdrPort,this);
+        controlCh = new PeerConnection(mcAddr, mcPort, this);
+        backupCh= new PeerConnection(mdbAddr, mdbPort, this);
+        restoreCh = new PeerConnection(mdrAddr, mdrPort, this);
         //each connection has 1 thread listener
 
         PeerRmi initiatorPeer = new PeerRmi(this);
@@ -35,11 +37,11 @@ public class PeerInfo {
         this.peerID++;
     }
 
-    public void requestChunkBackup(String fileId,int chunkNo,int repDeg,byte[] currChunk){
-        String peerName=Integer.toString(this.peerID);
-        String chunkNumb=Integer.toString(chunkNo);
+    public void requestChunkBackup(String fileId, int chunkNo, int repDeg, byte[] currChunk){
+        String peerName = Integer.toString(this.peerID);
+        String chunkNumb = Integer.toString(chunkNo);
         Runnable runnable = () -> {
-            Message message = new Message("PUTCHUNK","RMI",peerName,fileId,chunkNumb,repDeg);
+            Message message = new Message("PUTCHUNK", "RMI", peerName, fileId, chunkNumb, repDeg);
             byte[] finalMsg = message.getMsg();
             while(true){
                 try {
@@ -47,14 +49,18 @@ public class PeerInfo {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
             }
-
         };
+
         Thread thread = new Thread(runnable);
         thread.start();
     }
+
     public void messageHandler(DatagramPacket packet) {
 
+    }
+
+    public void requestFileDeletion(String fileId){
+        
     }
 }

@@ -1,9 +1,11 @@
 import java.security.MessageDigest;
 
 public class Utilities {
+
     public Utilities(){
 
     }
+
     public static String getSha256(String value) {
         try{
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -13,6 +15,7 @@ public class Utilities {
             throw new RuntimeException(ex);
         }
     }
+
     private static String bytesToHex(byte[] bytes) {
         StringBuffer result = new StringBuffer();
         for (byte b : bytes) result.append(Integer.toString((b & 0xff) + 0x100, 16).substring(1));
