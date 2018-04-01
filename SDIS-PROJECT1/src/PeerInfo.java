@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -33,6 +34,12 @@ public class PeerInfo {
         //each connection has 1 thread listener
 
         //PeerRmi initiatorPeer = new PeerRmi(this);
+        String pathname="/home/beerzy/IdeaProjects/FEUP-SDIS/SDIS-PROJECT1/src/bin/"+"Peer"+Integer.toString(this.peerID)+"/"+"my_files";
+        File file = new File(pathname);
+        file.mkdirs();
+        String pathname1="/home/beerzy/IdeaProjects/FEUP-SDIS/SDIS-PROJECT1/src/bin/"+"Peer"+Integer.toString(this.peerID)+"/"+"my_chunks";
+        File file1 = new File(pathname1);
+        file1.mkdirs();
         this.incrementPeerId();
     }
 

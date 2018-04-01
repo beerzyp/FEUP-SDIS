@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -35,12 +36,14 @@ class PeerServer {
                 InetAddress.getByName("224.0.0.1"), 4446,InetAddress.getByName("224.0.0.2"),4447);
         PeerInfo peerinfo3= new PeerInfo("0", "1", "1",InetAddress.getByName("224.0.0.0"),4445 ,
                 InetAddress.getByName("224.0.0.1"), 4446,InetAddress.getByName("224.0.0.2"),4447);
-        byte[] asd={'a','b','c'};
-        Message message = new Message("PUTCHUNK", "RMI", "1", "src", "2", 3);
-        byte[] finalMsg = message.getMsg();
-        peerinfo1.backupCh.sendMessage(finalMsg);
-        peerinfo2.backupCh.recieveMessage();
+       // byte[] asd={'a','b','c'};
+       // Message message = new Message("PUTCHUNK", "RMI", "1", "src", "2", 3);
+       // byte[] finalMsg = message.getMsg();
+       // peerinfo1.backupCh.sendMessage(finalMsg);
+        //peerinfo2.backupCh.recieveMessage();
         //DatagramPacket pckt =peerinfo1.backupCh.getRecievedPacket();
         //System.out.println("receiving packet with length : "+ pckt.getData().length);
+        File file = new File("/home/beerzy/IdeaProjects/FEUP-SDIS/SDIS-PROJECT1/src/bin");
+        file.mkdirs();
     }
 }
