@@ -26,6 +26,7 @@ public class PeerInfo {
     public PeerConnection restoreCh;
     public ArrayList<Integer> chunks;
     public static int peerID = 0;
+    private ArrayList<File> myHomeFiles;
 
     private String path_base = "./bin/";
 
@@ -37,10 +38,14 @@ public class PeerInfo {
         restoreCh = new PeerConnection(mdrAddr, mdrPort, this);
         //each connection has 1 thread listener
         //PeerRmi initPeer = new PeerRmi(this);
-        //initPeer.backup("./bin/Peer0/my_files/Arkanoid-Logo-New.bmp",3);
+        //initPeer.backup("./bin/Peer0/my_files/Arkanoid-Logo-New.jpg",3);
 
-        PeerRmi initiatorPeer = new PeerRmi(this);
-        initiatorPeer.backup("./bin/Peer0/my_files/img1.jpg",3);
+       // PeerRmi initiatorPeer = new PeerRmi(this);
+        //initiatorPeer.backup("./bin/Peer0/my_files/img1.jpg",3);
+        myHomeFiles = new ArrayList<File>(0);
+        readFilesFromPeer();
+        //for(int i=0;i<this.myFiles.size();i++){
+        //}
         String pathname="./bin/"+"Peer"+Integer.toString(this.peerID)+"/"+"my_files";
         File file = new File(pathname);
         file.mkdirs();
@@ -48,6 +53,17 @@ public class PeerInfo {
         File file1 = new File(pathname1);
         file1.mkdirs();
         this.incrementPeerId();
+    }
+    public void readFilesFromPeer(){
+
+        File folder = new File("bin/Peer0/my_files");
+        File[] listOfFiles = folder.listFiles();
+
+        for (int i = 0; i < listOfFiles.length-1; i++) {
+            if (listOfFiles[i].isFile()) {
+                this.myHomeFiles.add(listOfFiles[i]);
+            }
+        }
     }
 
     public void incrementPeerId(){

@@ -58,14 +58,55 @@ class PeerServer {
         //message for delete
         Message message = new Message("DELETE", "RMI", "1", "src");
         byte[] finalMsg = message.getMsg();
+        ByteArrayInputStream msg= new ByteArrayInputStream(finalMsg);
 
+        Scanner scanner = new Scanner(msg);
+        scanner.useDelimiter("\\Z");//To read all scanner content in one String
 
+        String data = "";
 
+        if (scanner.hasNext()) {
+            data = scanner.next();
+        }
+
+        if(finalMsg[finalMsg.length-2]!=(char) 0x0D){
+            System.out.println("Error in CR Confirmation");
+            return;
+        }
+
+        if(finalMsg[finalMsg.length-1]!=(char) 0x0A){
+            System.out.println("Error in LF Confirmation");
+            return;
+        }
+
+        /*
+        Options for messages:
+            generic | <MessageType> | <Version> | <SenderId> | <FileId> | <ChunkNo> | <ReplicationDeg> |     <CRLF>   | <Body>
+           ---------|---------------|-----------|------------|----------|-----------|------------------|--------------|--------
+             backup |    PUTCHUNK   | <Version> | <SenderId> | <FileId> | <ChunkNo> | <ReplicationDeg> | <CRLF><CRLF> | <Body>
+           ---------|---------------|-----------|------------|----------|-----------|------------------|--------------|--------
+                    |     STORED    | <Version> | <SenderId> | <FileId> | <ChunkNo> |                  | <CRLF><CRLF> |
+           ---------|---------------|-----------|------------|----------|-----------|------------------|--------------|--------
+            restore |    GETCHUNK   | <Version> | <SenderId> | <FileId> | <ChunkNo> |                  | <CRLF><CRLF> |
+           ---------|---------------|-----------|------------|----------|-----------|------------------|--------------|--------
+                    |     CHUNK     | <Version> | <SenderId> | <FileId> | <ChunkNo> |                  | <CRLF><CRLF> | <Body>
+           ---------|---------------|-----------|------------|----------|-----------|------------------|--------------|--------
+             delete |     DELETE    | <Version> | <SenderId> | <FileId> |           |                  | <CRLF><CRLF> |
+           ---------|---------------|-----------|------------|----------|-----------|------------------|--------------|--------
+            reclaim |    REMOVED    | <Version> | <SenderId> | <FileId> | <ChunkNo> |                  | <CRLF><CRLF> |
+ */
+        String header[] = (data.trim()).split(" ");
+        String protocol = header[0];
+        String versionID = header[1];
+        String senderID = header[2];
+        String fileID = header[3];
+        System.out.println(protocol);
+        System.out.println(versionID);
         String m1 = new String(finalMsg,"UTF-8");
         File file = new File("./bin");
         file.mkdirs();
         byte[] currChunk= new byte[64000];
-        //peerinfo1.requestChunkBackup("bin/Peer0/my_files/Arkanoid-Logo-New.bmp",0,3,currChunk);
+        //peerinfo1.requestChunkBackup("bin/Peer0/my_files/Arkanoid-Logo-New.jpg",0,3,currChunk);
 
     }
 }

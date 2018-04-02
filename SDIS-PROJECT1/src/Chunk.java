@@ -8,7 +8,7 @@ public class Chunk {
     private int replicationDegree;
 
     private byte[] data;
-
+///home/beerzy/IdeaProjects/FEUP-SDIS/SDIS-PROJECT1/src/bin/Peer0/my_files/asd.txt
     public Chunk(String fileID, int chunkNo, int replicationDegree, byte[] data) {
 
         this.replicationDegree = replicationDegree;

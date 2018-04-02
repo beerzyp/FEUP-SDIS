@@ -3,6 +3,7 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -18,6 +19,8 @@ public class PeerConnection {
     private final PeerInfo peerInfo;
     private String peerName;
     //host:port/name
+    private ArrayList<String>  myFiles;
+
     public PeerConnection(InetAddress mcAddr, int mcastPort, PeerInfo newPeerInfo) throws IOException{
     this.mcAddr=mcAddr; //localhost is not in range in multicasting TODO: address comes from cmd
     this.mcPort=mcastPort;
