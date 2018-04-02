@@ -1,3 +1,4 @@
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -5,6 +6,7 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 /*
 http://cs.berry.edu/~nhamid/p2p/
@@ -62,13 +64,16 @@ public class PeerInfo {
         Runnable runnable = () -> {
             String peerName = Integer.toString(this.peerID);
             String chunkNumb = Integer.toString(chunkNo);
-            Message message = new Message("PUTCHUNK", "RMI", peerName, fileId, chunkNumb, repDeg);
+            Message message = new Message("PUTCHUNK", "RMI", peerName, fileId, chunkNumb, repDeg,currChunk);
             byte[] finalMsg = message.getMsg();
             while(true){
-                try {
-                    backupCh.sendMessage(finalMsg);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                int count=0;
+                while(count<5) {
+                    try {
+                        backupCh.sendMessage(finalMsg);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         };
@@ -77,7 +82,19 @@ public class PeerInfo {
         thread.start();
     }
 
-    public void messageHandler(DatagramPacket packet) {
+    public void messageHandler(byte[] packetData,InetAddress address) {
+        ByteArrayInputStream msg= new ByteArrayInputStream(packetData);
+        Scanner scanner = new Scanner(msg);
+        scanner.useDelimiter("\\Z");//To read all scanner content in one String
+        String data = "";
+        if (scanner.hasNext())
+            data = scanner.next();
+        if(packetData[packetData.length-2]!=(char) 0x0D){
+            System.out.println("Error in CR Confirmation");
+        }
+        if(packetData[packetData.length-1]!=(char) 0x0A){
+            System.out.println("Error in LF Confirmation");
+        }
 
     }
 

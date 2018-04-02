@@ -3,6 +3,7 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.SocketException;
+import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -16,7 +17,7 @@ public class PeerConnection {
     //from peerInfo
     private final PeerInfo peerInfo;
     private String peerName;
-
+    //host:port/name
     public PeerConnection(InetAddress mcAddr, int mcastPort, PeerInfo newPeerInfo) throws IOException{
     this.mcAddr=mcAddr; //localhost is not in range in multicasting TODO: address comes from cmd
     this.mcPort=mcastPort;
@@ -55,15 +56,16 @@ public class PeerConnection {
 
     }
     public void recieveMessage() throws IOException{
-        byte[] r_buffer = new byte[1024];
-        DatagramPacket receivePacket = new DatagramPacket(r_buffer, r_buffer.length);
         Runnable runnable = () -> {
             while(true) {
                 try {
+                    byte[] r_buffer = new byte[64000];
+                    DatagramPacket receivePacket = new DatagramPacket(r_buffer, r_buffer.length);
                     this.mcSocket.receive(receivePacket);
                     this.recievedPacket=receivePacket;
                     //System.out.println("\nmessage received " + ((String) Integer.toString(recievedPacket.getData()[recievedPacket.getData().length-1]))
                            // +Integer.toString(recievedPacket.getData()[recievedPacket.getData().length-2])+Integer.toString(recievedPacket.getData()[recievedPacket.getData().length-3]+Integer.toString(recievedPacket.getData()[recievedPacket.getData().length-4]);
+                    this.peerMessageHandler(receivePacket);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -78,10 +80,13 @@ public class PeerConnection {
     private void peerMessageHandler(DatagramPacket packet){
         //peer id2 accepts connection and starts handler thread
         //An ExecutorService can be shut down, which will cause it to reject new tasks. . shutdown();
+        ////host:port/name
+
         Runnable runnable = () -> {
-            this.peerInfo.messageHandler(packet);
+            byte[] packetData=Arrays.copyOfRange(packet.getData(),0, packet.getLength());
+            this.peerInfo.messageHandler(packetData, packet.getAddress());
         };
-        ExecutorService service = Executors.newFixedThreadPool(10);
+        ExecutorService service = Executors.newFixedThreadPool(1);
 
         service.execute(runnable);
     }

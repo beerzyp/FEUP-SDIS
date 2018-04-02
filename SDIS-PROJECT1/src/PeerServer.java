@@ -1,9 +1,11 @@
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
 
 class PeerServer {
     public static void main(String[] args) throws IOException {
@@ -56,9 +58,10 @@ class PeerServer {
         //message for delete
         Message message = new Message("DELETE", "RMI", "1", "src");
         byte[] finalMsg = message.getMsg();
-        String m1 = new String(finalMsg,"UTF-8");
-        System.out.println(m1);
 
+
+
+        String m1 = new String(finalMsg,"UTF-8");
         File file = new File("./bin");
         file.mkdirs();
         byte[] currChunk= new byte[64000];

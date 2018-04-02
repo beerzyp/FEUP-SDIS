@@ -5,16 +5,20 @@ import java.io.ByteArrayOutputStream;
  */
 public class Message {
     public static final byte CR = 0xD;
-
+    private static String msgType;
     public static final byte LF = 0xA;
 
     private static final String CRLF = "" + (char) CR + (char) LF;
     private byte[] finalMsg;
 
-    public Message(String msgType, String versionId, String senderID, String fileID, String chunkNo, int repDeg){
+    public Message(String msgType, String versionId, String senderID, String fileID, String chunkNo, int repDeg,byte[] body){
+        this.msgType=msgType;
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        String join = String.join("",msgType, versionId, senderID, fileID, chunkNo, Integer.toString(repDeg),CRLF);
-        this.finalMsg = join.getBytes();
+        String join = String.join(" ",msgType, versionId, senderID, fileID, chunkNo, Integer.toString(repDeg),CRLF);
+        byte[] msg=join.getBytes();
+        System.arraycopy(body,0,msg,msg.length,body.length);
+
+        this.finalMsg = msg;
     }
 
     /**
@@ -25,9 +29,10 @@ public class Message {
      * @param fileID file identifier
      */
     public Message(String msgType, String versionId, String senderID, String fileID){
+        this.msgType=msgType;
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
-        String join = String.join("",msgType, versionId, senderID, fileID, CRLF);
+        String join = String.join(" ",msgType, versionId, senderID, fileID, CRLF);
 
         this.finalMsg = join.getBytes();
     }
