@@ -122,7 +122,7 @@ public class PeerInfo {
         String protocol = header[0];
         String versionID = header[1];
         String senderID = header[2];
-        String fileID = header[3];
+        String fileID;
 
         String chunkNo;
 
@@ -134,6 +134,7 @@ public class PeerInfo {
                     System.out.println(" PUTCHUNK <Version> <SenderId> <FileId> <ChunkNo> <ReplicationDeg> <CRLF><CRLF> <Body>");
                 }
 
+                fileID = header[3];
                 chunkNo = header[4];
                 String replicationDeg = header[5];
                 break;
@@ -142,6 +143,8 @@ public class PeerInfo {
                     System.out.println("Invalid input");
                     System.out.println(" PUTCHUNK <Version> <SenderId> <FileId> <ChunkNo> <ReplicationDeg> <CRLF><CRLF> <Body>");
                 }
+
+                fileID = header[3];
                 chunkNo = header[4];
                 break;
             case "DELETE":
@@ -149,6 +152,8 @@ public class PeerInfo {
                     System.out.println("Invalid input");
                     System.out.println(" PUTCHUNK <Version> <SenderId> <FileId> <ChunkNo> <ReplicationDeg> <CRLF><CRLF> <Body>");
                 }
+                fileID = header[3];
+                
                 break;
             default:
                 System.out.println("Invalid option");
