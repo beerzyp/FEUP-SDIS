@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -23,7 +24,7 @@ public class PeerInfo {
     public PeerConnection controlCh;
     public PeerConnection backupCh;
     public PeerConnection restoreCh;
-    public ArrayList<Chunk> chunks;
+    public ArrayList<Integer> chunks;
     public static int peerID = 0;
 
     public PeerInfo(String serverId, String protocolVersion, String serviceAccessPoint, InetAddress mcAddr, int mcPort,
@@ -32,11 +33,12 @@ public class PeerInfo {
         controlCh = new PeerConnection(mcAddr, mcPort, this);
         backupCh= new PeerConnection(mdbAddr, mdbPort, this);
         restoreCh = new PeerConnection(mdrAddr, mdrPort, this);
-
         //each connection has 1 thread listener
-        PeerRmi initPeer = new PeerRmi(this);
-        initPeer.backup("./bin/Peer0/my_files/Arkanoid-Logo-New.bmp",3);
-        //PeerRmi initiatorPeer = new PeerRmi(this);
+        //PeerRmi initPeer = new PeerRmi(this);
+        //initPeer.backup("./bin/Peer0/my_files/Arkanoid-Logo-New.bmp",3);
+
+        PeerRmi initiatorPeer = new PeerRmi(this);
+        initiatorPeer.backup("./bin/Peer0/my_files/Arkanoid-Logo-New.bmp",3);
         String pathname="./bin/"+"Peer"+Integer.toString(this.peerID)+"/"+"my_files";
         File file = new File(pathname);
         file.mkdirs();
