@@ -1,15 +1,13 @@
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.*;
-
-import java.nio.file.Paths;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 public class PeerRmi extends UnicastRemoteObject implements RMI {
     private final PeerInfo peer;
+
+    private ChunkDB chunkDB;
 
     protected PeerRmi(PeerInfo peer) throws RemoteException {
         this.peer = peer;
@@ -76,8 +74,21 @@ public class PeerRmi extends UnicastRemoteObject implements RMI {
             throw new IllegalArgumentException("Invalid arguments for delete");
         }
 
-        //String filepath = peer.ge
-        //String fileId = this.util.getSha256(filepath);
+        String filepath = peer.getPath_base() + pathname;
+
+        int chunkNo = 0;
+        int readableBytes = -1;
+        byte[] chunk = new byte[64000];
+        Chunk newChunk = new Chunk("null",0,1,chunk);
+        String fileId = newChunk.getSha256(filepath);
+
+        boolean fileExist = chunkDB.searchFileID(fileId);
+
+        if (fileExist == false){
+            throw new IllegalArgumentException("File don't exist");
+        }
+
+        peer.requestFileDeletion(filepath);
     }
 
     @Override

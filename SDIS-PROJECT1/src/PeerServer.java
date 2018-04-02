@@ -7,6 +7,8 @@ import java.nio.charset.StandardCharsets;
 
 class PeerServer {
     public static void main(String[] args) throws IOException {
+        System.setProperty("java.net.preferIPv4Stack", "true");
+
         if (args.length != 9) {
             System.out.println(args.length);
             throw new IllegalArgumentException("\nUsage: java PeerServer <protocolVersion> <serverId>  <accessPoint>" +
@@ -39,14 +41,23 @@ class PeerServer {
         PeerInfo peerinfo3= new PeerInfo("0", "1", "1",InetAddress.getByName("224.0.0.0"),4445 ,
                 InetAddress.getByName("224.0.0.1"), 4446,InetAddress.getByName("224.0.0.2"),4447);
        // byte[] asd={'a','b','c'};
+        /*
         Message message = new Message("PUTCHUNK", "RMI", "1", "src", "2", 3);
         byte[] finalMsg = message.getMsg();
         String a1= new String(finalMsg,"UTF-8");
         System.out.println(a1);
+        */
+       //Message message = new Message("PUTCHUNK", "RMI", "1", "src", "2", 3);
        // peerinfo1.backupCh.sendMessage(finalMsg);
         //peerinfo2.backupCh.recieveMessage();
         //DatagramPacket pckt =peerinfo1.backupCh.getRecievedPacket();
         //System.out.println("receiving packet with length : "+ pckt.getData().length);
+
+        //message for delete
+        Message message = new Message("DELETE", "RMI", "1", "src");
+        byte[] finalMsg = message.getMsg();
+        String m1 = new String(finalMsg,"UTF-8");
+        System.out.println(m1);
 
         File file = new File("./bin");
         file.mkdirs();
