@@ -82,7 +82,7 @@ public class PeerRmi extends UnicastRemoteObject implements RMI {
         Chunk newChunk = new Chunk("null",0,1,chunk);
         String fileId = newChunk.getSha256(filepath);
 
-        boolean fileExist = chunkDB.searchFileID(fileId);
+        boolean fileExist = chunkDB.searchFileIDExists(fileId);
 
         if (fileExist == false){
             throw new IllegalArgumentException("File don't exist");
