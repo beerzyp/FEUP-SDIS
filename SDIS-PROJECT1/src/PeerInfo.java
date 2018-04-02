@@ -1,10 +1,8 @@
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
-import java.net.MulticastSocket;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -34,7 +32,7 @@ public class PeerInfo {
     public PeerInfo(String serverId, String protocolVersion, String serviceAccessPoint, InetAddress mcAddr, int mcPort,
                     InetAddress mdbAddr, int mdbPort, InetAddress mdrAddr, int mdrPort) throws IOException{
         System.out.println("Peer " + this.peerID + " is connecting to network");
-        controlCh = new PeerConnection(mcAddr, mcPort, this);
+        controlCh = new PeerConnection(mcAddr, mcPort, this); // = MC
         backupCh= new PeerConnection(mdbAddr, mdbPort, this);
         restoreCh = new PeerConnection(mdrAddr, mdrPort, this);
         //each connection has 1 thread listener
@@ -42,7 +40,7 @@ public class PeerInfo {
         //initPeer.backup("./bin/Peer0/my_files/Arkanoid-Logo-New.bmp",3);
 
         PeerRmi initiatorPeer = new PeerRmi(this);
-        initiatorPeer.backup("./bin/Peer0/my_files/Arkanoid-Logo-New.bmp",3);
+        initiatorPeer.backup("./bin/Peer0/my_files/img1.jpg",3);
         String pathname="./bin/"+"Peer"+Integer.toString(this.peerID)+"/"+"my_files";
         File file = new File(pathname);
         file.mkdirs();
@@ -99,6 +97,23 @@ public class PeerInfo {
     }
 
     public void requestFileDeletion(String fileId){
-        
+
+        Runnable runnable = () -> {
+            String peerName = Integer.toString(this.peerID);
+            //String chunkNumb = Integer.toString(chunkNo);
+            Message message = new Message("DELETE", "RMI", peerName, fileId);
+            byte[] finalMsg = message.getMsg();
+            while(true){
+                try {
+                    controlCh.sendMessage(finalMsg);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        Thread thread = new Thread(runnable);
+        thread.start();
     }
+
 }
