@@ -30,4 +30,19 @@ public class ChunkDB {
     public ConcurrentHashMap<String,Integer> getNumberOfChunksOfFile(){
         return numberOfChunksOfFile;
     }
+
+    public boolean searchFileID(String fileID){
+        boolean res = false;
+
+        int size_hash = peerHasChunks.size();
+
+        for (int i = 0; i < size_hash; i++){
+            if(peerHasChunk.get(i).getID() == fileID){
+                res = true;
+                return res;
+            }
+        }
+
+        return res;
+    }
 }

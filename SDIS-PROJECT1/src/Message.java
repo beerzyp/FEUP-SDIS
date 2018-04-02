@@ -13,7 +13,7 @@ public class Message {
 
     public Message(String msgType, String versionId, String senderID, String fileID, String chunkNo, int repDeg){
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        String join = String.join(msgType, versionId, senderID, fileID, chunkNo, Integer.toString(repDeg),CRLF);
+        String join = String.join("",msgType, versionId, senderID, fileID, chunkNo, Integer.toString(repDeg),CRLF);
         this.finalMsg = join.getBytes();
     }
 
