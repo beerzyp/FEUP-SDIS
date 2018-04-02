@@ -37,7 +37,7 @@ public class Client {
         String file;
 
         try {
-            switch (sub_protocol) {
+            switch (sub_protocol.toUpperCase()) {
                 case "BACKUP":
                     file=args[2];
                     int replicationDeg=Integer.parseInt(args[3]);
@@ -45,7 +45,9 @@ public class Client {
                     initiatorPeer.backup(file,replicationDeg);
                     break;
                 case "RESTORE":
+                    file=args[2];
                     System.out.println("RESTORE op");
+                    initiatorPeer.delete(file);
                     break;
                 case "DELETE":
                     file=args[2];

@@ -25,14 +25,19 @@ public class Message {
         this.finalMsg = byteArrayOutputStream.toByteArray();
     }
 
+    /**
+     *
+     * @param msgType
+     * @param versionId
+     * @param senderID
+     * @param fileID
+     */
     public Message(String msgType, String versionId, String senderID, String fileID){
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        String join = String.join(msgType, versionId, senderID, fileID);
-        byte[] body = join.getBytes();
-        byteArrayOutputStream.write(body, 0, body.length);
-        byte[] header = CRLF.getBytes();
-        byteArrayOutputStream.write(header, body.length, header.length);
-        this.finalMsg = byteArrayOutputStream.toByteArray();
+
+        String join = String.join("",msgType, versionId, senderID, fileID, CRLF);
+
+        this.finalMsg = join.getBytes();
     }
 
     public byte[] getMsg(){

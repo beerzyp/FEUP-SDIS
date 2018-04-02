@@ -2,6 +2,7 @@ import java.security.MessageDigest;
 public class Chunk {
 
     public static final int MAX_SIZE = 64000;
+
     private String chunkID;
 
     private int replicationDegree;
@@ -37,6 +38,7 @@ public class Chunk {
             throw new RuntimeException(ex);
         }
     }
+
     private static String bytesToHex(byte[] bytes) {
         StringBuffer result = new StringBuffer();
         for (byte b : bytes) result.append(Integer.toString((b & 0xff) + 0x100, 16).substring(1));
