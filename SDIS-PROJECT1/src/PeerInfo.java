@@ -89,10 +89,27 @@ public class PeerInfo {
             data = scanner.next();
         if(packetData[packetData.length-2]!=(char) 0x0D){
             System.out.println("Error in CR Confirmation");
+            return;
         }
         if(packetData[packetData.length-1]!=(char) 0x0A){
             System.out.println("Error in LF Confirmation");
+            return;
         }
+        String header[] = (data.trim()).split(" ");
+        String protocol=header[0];
+        String versionID=header[1];
+        String senderID=header[2];
+
+
+        switch(protocol){
+            case "PUTCHUNK":
+                break;
+            case "DELETE":
+                break;
+            default:
+                break;
+        }
+
 
     }
 
