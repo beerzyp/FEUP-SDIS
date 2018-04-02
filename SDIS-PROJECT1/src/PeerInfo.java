@@ -27,6 +27,8 @@ public class PeerInfo {
     public ArrayList<Integer> chunks;
     public static int peerID = 0;
 
+    private String path_base = "./bin/";
+
     public PeerInfo(String serverId, String protocolVersion, String serviceAccessPoint, InetAddress mcAddr, int mcPort,
                     InetAddress mdbAddr, int mdbPort, InetAddress mdrAddr, int mdrPort) throws IOException{
         System.out.println("Peer " + this.peerID + " is connecting to network");
@@ -50,6 +52,10 @@ public class PeerInfo {
 
     public void incrementPeerId(){
         this.peerID++;
+    }
+
+    public String getPath_base(){
+        return path_base;
     }
 
     public void requestChunkBackup(String fileId, int chunkNo, int repDeg, byte[] currChunk){
