@@ -28,6 +28,8 @@ public class PeerInfo {
     public static int peerID = 0;
     private ArrayList<File> myHomeFiles;
 
+    private ChunkDB chunkDB;
+
     private String path_base = "./bin/";
 
     public PeerInfo(String serverId, String protocolVersion, String serviceAccessPoint, InetAddress mcAddr, int mcPort,
@@ -72,6 +74,10 @@ public class PeerInfo {
 
     public String getPath_base(){
         return path_base;
+    }
+
+    public ChunkDB getChunkDB(){
+        return chunkDB;
     }
 
     public void requestChunkBackup(String fileId, int chunkNo, int repDeg, byte[] currChunk){
@@ -169,7 +175,8 @@ public class PeerInfo {
                     System.out.println(" PUTCHUNK <Version> <SenderId> <FileId> <ChunkNo> <ReplicationDeg> <CRLF><CRLF> <Body>");
                 }
                 fileID = header[3];
-                
+
+                getChunkDB().deleteFile(fileID);
                 break;
             default:
                 System.out.println("Invalid option");

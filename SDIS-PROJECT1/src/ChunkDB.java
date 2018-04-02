@@ -101,4 +101,37 @@ public class ChunkDB {
 
         peerHasChunks.get(peer).remove(pos_chunk);
     }
+
+    public ArrayList<Chunk> search_chunks_of_file(String fileID){
+        ArrayList<Chunk> chunks_of_file = new ArrayList<>();
+        int size_hash = peerHasChunks.size();
+
+        for (int i = 0; i < size_hash; i++){
+            ArrayList<Chunk> aux = peerHasChunks.get(i);
+
+            int size_aux = aux.size();
+
+            for (int j = 0; j < size_aux; j++){
+                if (aux.get(j).getID() == fileID){
+                    chunks_of_file.add(aux.get(j));
+                }
+            }
+        }
+
+        return chunks_of_file;
+    }
+
+    public ArrayList<String> deleteFile(String fileID) {
+        ArrayList<Chunk> chunks_of_file = search_chunks_of_file(fileID);
+
+        ArrayList<String> deleted = new ArrayList<>();
+
+        if (chunks_of_file == null) {
+            System.out.println("Don't exist any file with id" + fileID);
+        }else {
+
+        }
+
+        return deleted;
+    }
 }
