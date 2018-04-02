@@ -13,16 +13,8 @@ public class Message {
 
     public Message(String msgType, String versionId, String senderID, String fileID, String chunkNo, int repDeg){
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        String join = String.join(msgType, versionId, senderID, fileID, chunkNo, Integer.toString(repDeg));
-        byte[] body = join.getBytes();
-        byte[] header = CRLF.getBytes();
-        byte[] c = new byte[body.length + header.length];
-        System.arraycopy(body, 0, c, 0, body.length);
-        System.arraycopy(header, 0, c, body.length, header.length);
-        byteArrayOutputStream.write(c, 0, c.length);
-
-
-        this.finalMsg = byteArrayOutputStream.toByteArray();
+        String join = String.join(msgType, versionId, senderID, fileID, chunkNo, Integer.toString(repDeg),CRLF);
+        this.finalMsg = join.getBytes();
     }
 
     public Message(String msgType, String versionId, String senderID, String fileID){
