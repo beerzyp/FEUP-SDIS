@@ -10,6 +10,8 @@ public class ChunkDB {
 
     private ConcurrentHashMap<Integer, Chunk> peerHasRemove;
 
+    public int count = 0;
+
     public ChunkDB(){
         this.peerHasChunk= new ConcurrentHashMap<>();
         this.peerHasChunks = new ConcurrentHashMap<>();
@@ -67,6 +69,8 @@ public class ChunkDB {
                 }
             }
         }
+
+        count++;
 
         return pos;
     }
