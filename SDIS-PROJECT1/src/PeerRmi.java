@@ -46,6 +46,7 @@ public class PeerRmi extends UnicastRemoteObject implements RMI {
                 chunk = new byte[readableBytes];
 
             file.read(chunk);
+
             peer.requestChunkBackup(fileId, chunkNo, replicationDegree, chunk);
             chunkNo++;
         }

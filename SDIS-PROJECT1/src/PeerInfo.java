@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.util.ArrayList;
 
 /*
 http://cs.berry.edu/~nhamid/p2p/
@@ -22,6 +23,7 @@ public class PeerInfo {
     public PeerConnection controlCh;
     public PeerConnection backupCh;
     public PeerConnection restoreCh;
+    public ArrayList<Chunk> chunks;
     public static int peerID = 0;
 
     public PeerInfo(String serverId, String protocolVersion, String serviceAccessPoint, InetAddress mcAddr, int mcPort,
@@ -32,12 +34,13 @@ public class PeerInfo {
         restoreCh = new PeerConnection(mdrAddr, mdrPort, this);
 
         //each connection has 1 thread listener
-
+        PeerRmi initPeer = new PeerRmi(this);
+        initPeer.backup("./bin/Peer0/my_files/Arkanoid-Logo-New.bmp",3);
         //PeerRmi initiatorPeer = new PeerRmi(this);
-        String pathname="/home/beerzy/IdeaProjects/FEUP-SDIS/SDIS-PROJECT1/src/bin/"+"Peer"+Integer.toString(this.peerID)+"/"+"my_files";
+        String pathname="./bin/"+"Peer"+Integer.toString(this.peerID)+"/"+"my_files";
         File file = new File(pathname);
         file.mkdirs();
-        String pathname1="/home/beerzy/IdeaProjects/FEUP-SDIS/SDIS-PROJECT1/src/bin/"+"Peer"+Integer.toString(this.peerID)+"/"+"my_chunks";
+        String pathname1="./bin/"+"Peer"+Integer.toString(this.peerID)+"/"+"my_chunks";
         File file1 = new File(pathname1);
         file1.mkdirs();
         this.incrementPeerId();
@@ -48,9 +51,9 @@ public class PeerInfo {
     }
 
     public void requestChunkBackup(String fileId, int chunkNo, int repDeg, byte[] currChunk){
-        String peerName = Integer.toString(this.peerID);
-        String chunkNumb = Integer.toString(chunkNo);
         Runnable runnable = () -> {
+            String peerName = Integer.toString(this.peerID);
+            String chunkNumb = Integer.toString(chunkNo);
             Message message = new Message("PUTCHUNK", "RMI", peerName, fileId, chunkNumb, repDeg);
             byte[] finalMsg = message.getMsg();
             while(true){
