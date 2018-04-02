@@ -82,31 +82,76 @@ public class PeerInfo {
 
     public void messageHandler(byte[] packetData,InetAddress address) {
         ByteArrayInputStream msg= new ByteArrayInputStream(packetData);
+
         Scanner scanner = new Scanner(msg);
         scanner.useDelimiter("\\Z");//To read all scanner content in one String
+
         String data = "";
-        if (scanner.hasNext())
+
+        if (scanner.hasNext()) {
             data = scanner.next();
+        }
+
         if(packetData[packetData.length-2]!=(char) 0x0D){
             System.out.println("Error in CR Confirmation");
             return;
         }
+
         if(packetData[packetData.length-1]!=(char) 0x0A){
             System.out.println("Error in LF Confirmation");
             return;
         }
-        String header[] = (data.trim()).split(" ");
-        String protocol=header[0];
-        String versionID=header[1];
-        String senderID=header[2];
 
+        /*
+        Options for messages:
+            generic | <MessageType> | <Version> | <SenderId> | <FileId> | <ChunkNo> | <ReplicationDeg> |     <CRLF>   | <Body>
+           ---------|---------------|-----------|------------|----------|-----------|------------------|--------------|--------
+             backup |    PUTCHUNK   | <Version> | <SenderId> | <FileId> | <ChunkNo> | <ReplicationDeg> | <CRLF><CRLF> | <Body>
+           ---------|---------------|-----------|------------|----------|-----------|------------------|--------------|--------
+                    |     STORED    | <Version> | <SenderId> | <FileId> | <ChunkNo> |                  | <CRLF><CRLF> |
+           ---------|---------------|-----------|------------|----------|-----------|------------------|--------------|--------
+            restore |    GETCHUNK   | <Version> | <SenderId> | <FileId> | <ChunkNo> |                  | <CRLF><CRLF> |
+           ---------|---------------|-----------|------------|----------|-----------|------------------|--------------|--------
+                    |     CHUNK     | <Version> | <SenderId> | <FileId> | <ChunkNo> |                  | <CRLF><CRLF> | <Body>
+           ---------|---------------|-----------|------------|----------|-----------|------------------|--------------|--------
+             delete |     DELETE    | <Version> | <SenderId> | <FileId> |           |                  | <CRLF><CRLF> |
+           ---------|---------------|-----------|------------|----------|-----------|------------------|--------------|--------
+            reclaim |    REMOVED    | <Version> | <SenderId> | <FileId> | <ChunkNo> |                  | <CRLF><CRLF> |
+ */
+        String header[] = (data.trim()).split(" ");
+        String protocol = header[0];
+        String versionID = header[1];
+        String senderID = header[2];
+        String fileID = header[3];
+
+        String chunkNo;
 
         switch(protocol){
             case "PUTCHUNK":
+                /*crlf e body */
+                if (header.length < 6){
+                    System.out.println("Invalid input");
+                    System.out.println(" PUTCHUNK <Version> <SenderId> <FileId> <ChunkNo> <ReplicationDeg> <CRLF><CRLF> <Body>");
+                }
+
+                chunkNo = header[4];
+                String replicationDeg = header[5];
+                break;
+            case "GETCHUNK":
+                if (header.length < 5){
+                    System.out.println("Invalid input");
+                    System.out.println(" PUTCHUNK <Version> <SenderId> <FileId> <ChunkNo> <ReplicationDeg> <CRLF><CRLF> <Body>");
+                }
+                chunkNo = header[4];
                 break;
             case "DELETE":
+                if (header.length < 4){
+                    System.out.println("Invalid input");
+                    System.out.println(" PUTCHUNK <Version> <SenderId> <FileId> <ChunkNo> <ReplicationDeg> <CRLF><CRLF> <Body>");
+                }
                 break;
             default:
+                System.out.println("Invalid option");
                 break;
         }
 
