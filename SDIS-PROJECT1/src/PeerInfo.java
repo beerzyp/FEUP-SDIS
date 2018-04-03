@@ -45,15 +45,13 @@ public class PeerInfo {
         restoreCh = new PeerConnection(mdrAddr, mdrPort, this);
         this.chunkDB=new ChunkDB();
         PeerRmi initiatorPeer = new PeerRmi(this);
-
-        /*no rmi object error
         try {
             Registry registry = LocateRegistry.getRegistry();
             registry.rebind(serviceAccessPoint, initiatorPeer);
         } catch (Exception e) {
             System.out.println("Peer error: " + e.getMessage());
             e.printStackTrace();
-        }*/
+        }
         //initiatorPeer.backup("./bin/Peer0/my_files/img1.jpg",3);
         myHomeFiles = new ArrayList<File>(0);
         chunkFilePaths= new ArrayList<String>();

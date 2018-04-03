@@ -33,13 +33,15 @@ class PeerServer {
         PeerLauncher 1.0 1 peer1 224.0.0.0 4445 224.0.0.1  4446 224.0.0.2 2000
          */
 
-        PeerInfo peerinfo1= new PeerInfo("0", "1", "1",InetAddress.getByName("224.0.0.0"),4445 ,
+        PeerInfo peerinfo1= new PeerInfo("0", "1", "0",InetAddress.getByName("224.0.0.0"),4445 ,
                 InetAddress.getByName("224.0.0.1"), 4446,InetAddress.getByName("224.0.0.2"),4447);
-        PeerInfo peerinfo2= new PeerInfo("0", "1", "1",InetAddress.getByName("224.0.0.0"),4445 ,
+        PeerInfo peerinfo2= new PeerInfo("1", "1", "1",InetAddress.getByName("224.0.0.0"),4445 ,
                 InetAddress.getByName("224.0.0.1"), 4446,InetAddress.getByName("224.0.0.2"),4447);
-        PeerInfo peerinfo3= new PeerInfo("0", "1", "1",InetAddress.getByName("224.0.0.0"),4445 ,
+        PeerInfo peerinfo3= new PeerInfo("2", "1", "2",InetAddress.getByName("224.0.0.0"),4445 ,
                 InetAddress.getByName("224.0.0.1"), 4446,InetAddress.getByName("224.0.0.2"),4447);
        // byte[] asd={'a','b','c'};
+        PeerInfo peerinfor= new PeerInfo("3", "1", "3",InetAddress.getByName("224.0.0.0"),4445 ,
+                InetAddress.getByName("224.0.0.1"), 4446,InetAddress.getByName("224.0.0.2"),4447);
         /*
         Message message = new Message("PUTCHUNK", "RMI", "1", "src", "2", 3);
         byte[] finalMsg = message.getMsg();
@@ -85,11 +87,6 @@ class PeerServer {
         System.out.println(protocol);
         System.out.println(versionID);
         String m1 = new String(finalMsg,"UTF-8");*/
-        int a1=0;
-        byte[] a2={'a','b','c','\n','h'};
-        FileOutputStream chunkFile = new FileOutputStream("./bin"+"/"+"Peer" +a1+"/my_files/asd");
-        chunkFile.write(a2);
-        chunkFile.close();
         File file = new File("./bin");
         file.mkdirs();
         byte[] currChunk= new byte[64000];
