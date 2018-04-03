@@ -3,14 +3,14 @@ import java.io.File;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
 /*
-http://cs.berry.edu/~nhamid/p2p/
-
 1. testClient sends file
 2. initiating peer id1 connects
 3. peer id2 accepts connection and starts handler thread
@@ -45,17 +45,30 @@ public class PeerInfo {
         restoreCh = new PeerConnection(mdrAddr, mdrPort, this);
 
         PeerRmi initiatorPeer = new PeerRmi(this);
+
+        /*no rmi object error
+        try {
+            Registry registry = LocateRegistry.getRegistry();
+            registry.rebind(serviceAccessPoint, initiatorPeer);
+        } catch (Exception e) {
+            System.out.println("Peer error: " + e.getMessage());
+            e.printStackTrace();
+        }*/
         //initiatorPeer.backup("./bin/Peer0/my_files/img1.jpg",3);
         myHomeFiles = new ArrayList<File>(0);
-        readFilesFromPeer();
-        //for(int i=0;i<this.myFiles.size();i++){
-        //}
+        chunkFilePaths= new ArrayList<String>();
+        chunksFileID=new ArrayList<String>();
         String pathname="./bin/"+"Peer"+Integer.toString(this.peerID)+"/"+"my_files";
         File file = new File(pathname);
         file.mkdirs();
         String pathname1="./bin/"+"Peer"+Integer.toString(this.peerID)+"/"+"my_chunks";
         File file1 = new File(pathname1);
         file1.mkdirs();
+        readFilesFromPeer();
+        System.out.println(this.myHomeFiles.size());
+        controlCh.recieveMessage();
+        backupCh.recieveMessage();
+        restoreCh.recieveMessage();
         this.incrementPeerId();
     }
     public void readFilesFromPeer(){
@@ -143,22 +156,6 @@ public class PeerInfo {
             return;
         }
 
-        /*
-        Options for messages:
-            generic | <MessageType> | <Version> | <SenderId> | <FileId> | <ChunkNo> | <ReplicationDeg> |     <CRLF>   | <Body>
-           ---------|---------------|-----------|------------|----------|-----------|------------------|--------------|--------
-             backup |    PUTCHUNK   | <Version> | <SenderId> | <FileId> | <ChunkNo> | <ReplicationDeg> | <CRLF><CRLF> | <Body>
-           ---------|---------------|-----------|------------|----------|-----------|------------------|--------------|--------
-                    |     STORED    | <Version> | <SenderId> | <FileId> | <ChunkNo> |                  | <CRLF><CRLF> |
-           ---------|---------------|-----------|------------|----------|-----------|------------------|--------------|--------
-            restore |    GETCHUNK   | <Version> | <SenderId> | <FileId> | <ChunkNo> |                  | <CRLF><CRLF> |
-           ---------|---------------|-----------|------------|----------|-----------|------------------|--------------|--------
-                    |     CHUNK     | <Version> | <SenderId> | <FileId> | <ChunkNo> |                  | <CRLF><CRLF> | <Body>
-           ---------|---------------|-----------|------------|----------|-----------|------------------|--------------|--------
-             delete |     DELETE    | <Version> | <SenderId> | <FileId> |           |                  | <CRLF><CRLF> |
-           ---------|---------------|-----------|------------|----------|-----------|------------------|--------------|--------
-            reclaim |    REMOVED    | <Version> | <SenderId> | <FileId> | <ChunkNo> |                  | <CRLF><CRLF> |
- */
         String header[] = (data.trim()).split(" ");
         String protocol = header[0];
         String versionID = header[1];

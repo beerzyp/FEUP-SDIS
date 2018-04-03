@@ -30,7 +30,7 @@ public class PeerRmi extends UnicastRemoteObject implements RMI {
             return;
         }
 
-        System.out.println("New backup request for file " + filepath);
+                System.out.println("Backup request on peer"+ this.peer.peerID+" for file "  + filepath);
         int chunkNo = 0;
         int readableBytes = -1;
         byte[] chunk = new byte[64000];
@@ -50,7 +50,7 @@ public class PeerRmi extends UnicastRemoteObject implements RMI {
                 chunk = new byte[readableBytes];
 
             file.read(chunk);
-            System.out.println("reading chunk no: " + chunkNo);
+                    System.out.println("reading chunk no: " + chunkNo);
             peer.requestChunkBackup(fileId, chunkNo, replicationDegree, chunk);
             chunkNo++;
         }
@@ -64,7 +64,6 @@ public class PeerRmi extends UnicastRemoteObject implements RMI {
             peer.requestChunkBackup(fileId, chunkNo, replicationDegree, chunk);
             chunkNo++;
         }
-
         this.peer.chunksFileID.add(fileId);
         this.peer.chunkFilePaths.add(filepath);
         ArrayList<Chunk> oldChunks=this.chunkDB.getPeerChunks(this.peer.peerID);

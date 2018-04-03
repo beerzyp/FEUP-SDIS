@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 class PeerServer {
     public static void main(String[] args) throws IOException {
-        System.setProperty("java.net.preferIPv4Stack", "true");
+        //System.setProperty("java.net.preferIPv4Stack", "true");
 
         if (args.length != 9) {
             System.out.println(args.length);
@@ -56,7 +56,7 @@ class PeerServer {
         //System.out.println("receiving packet with length : "+ pckt.getData().length);
 
         //message for delete
-        Message message = new Message("DELETE", "RMI", "1", "src");
+        /*Message message = new Message("DELETE", "RMI", "1", "src");
         byte[] finalMsg = message.getMsg();
         ByteArrayInputStream msg= new ByteArrayInputStream(finalMsg);
 
@@ -79,22 +79,7 @@ class PeerServer {
             return;
         }
 
-        /*
-        Options for messages:
-            generic | <MessageType> | <Version> | <SenderId> | <FileId> | <ChunkNo> | <ReplicationDeg> |     <CRLF>   | <Body>
-           ---------|---------------|-----------|------------|----------|-----------|------------------|--------------|--------
-             backup |    PUTCHUNK   | <Version> | <SenderId> | <FileId> | <ChunkNo> | <ReplicationDeg> | <CRLF><CRLF> | <Body>
-           ---------|---------------|-----------|------------|----------|-----------|------------------|--------------|--------
-                    |     STORED    | <Version> | <SenderId> | <FileId> | <ChunkNo> |                  | <CRLF><CRLF> |
-           ---------|---------------|-----------|------------|----------|-----------|------------------|--------------|--------
-            restore |    GETCHUNK   | <Version> | <SenderId> | <FileId> | <ChunkNo> |                  | <CRLF><CRLF> |
-           ---------|---------------|-----------|------------|----------|-----------|------------------|--------------|--------
-                    |     CHUNK     | <Version> | <SenderId> | <FileId> | <ChunkNo> |                  | <CRLF><CRLF> | <Body>
-           ---------|---------------|-----------|------------|----------|-----------|------------------|--------------|--------
-             delete |     DELETE    | <Version> | <SenderId> | <FileId> |           |                  | <CRLF><CRLF> |
-           ---------|---------------|-----------|------------|----------|-----------|------------------|--------------|--------
-            reclaim |    REMOVED    | <Version> | <SenderId> | <FileId> | <ChunkNo> |                  | <CRLF><CRLF> |
- */
+
         String header[] = (data.trim()).split(" ");
         String protocol = header[0];
         String versionID = header[1];
@@ -102,7 +87,8 @@ class PeerServer {
         String fileID = header[3];
         System.out.println(protocol);
         System.out.println(versionID);
-        String m1 = new String(finalMsg,"UTF-8");
+        String m1 = new String(finalMsg,"UTF-8");*/
+
         File file = new File("./bin");
         file.mkdirs();
         byte[] currChunk= new byte[64000];

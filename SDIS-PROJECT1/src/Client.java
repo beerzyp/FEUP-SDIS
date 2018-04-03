@@ -47,7 +47,7 @@ public class Client {
                 case "RESTORE":
                     file=args[2];
                     System.out.println("RESTORE op");
-                    initiatorPeer.delete(file);
+                    initiatorPeer.restore(file);
                     break;
                 case "DELETE":
                     file=args[2];
@@ -56,6 +56,7 @@ public class Client {
                     break;
                 case "RECLAIM":
                     System.out.println("RECLAIM op");
+                    initiatorPeer.reclaim(600000000);
                     break;
                 case "STATE":
                     System.out.println("STATE op");
