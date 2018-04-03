@@ -35,6 +35,8 @@ public class PeerInfo {
 
     private String path_base = "./bin/";
 
+    
+
 
 
     public PeerInfo(String serverId, String protocolVersion, String serviceAccessPoint, InetAddress mcAddr, int mcPort,
