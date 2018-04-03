@@ -12,7 +12,7 @@ public class Chunk {
     public Chunk(String fileID, int chunkNo, int replicationDegree, byte[] data) {
 
         this.replicationDegree = replicationDegree;
-
+        this.chunkNo=chunkNo;
         this.data = data;
 
     }
@@ -22,7 +22,7 @@ public class Chunk {
     public String getID() {
         return chunkID;
     }
-
+    public int getChunkNo(){return this.chunkNo;}
     public int getReplicationDegree() {
         return replicationDegree;
     }

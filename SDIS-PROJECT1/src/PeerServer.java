@@ -1,7 +1,4 @@
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintStream;
+import java.io.*;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
@@ -88,7 +85,11 @@ class PeerServer {
         System.out.println(protocol);
         System.out.println(versionID);
         String m1 = new String(finalMsg,"UTF-8");*/
-
+        int a1=0;
+        byte[] a2={'a','b','c','\n','h'};
+        FileOutputStream chunkFile = new FileOutputStream("./bin"+"/"+"Peer" +a1+"/my_files/asd");
+        chunkFile.write(a2);
+        chunkFile.close();
         File file = new File("./bin");
         file.mkdirs();
         byte[] currChunk= new byte[64000];

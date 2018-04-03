@@ -66,10 +66,7 @@ public class PeerRmi extends UnicastRemoteObject implements RMI {
         }
         this.peer.chunksFileID.add(fileId);
         this.peer.chunkFilePaths.add(filepath);
-        ArrayList<Chunk> oldChunks=this.chunkDB.getPeerChunks(this.peer.peerID);
-        oldChunks.add(newChunk);
-        this.chunkDB.addPeerHasChunks(this.peer.peerID,oldChunks);
-        this.chunkDB.addnumberOfChunksOfFile(fileId,chunkNo);
+
 
 
     }

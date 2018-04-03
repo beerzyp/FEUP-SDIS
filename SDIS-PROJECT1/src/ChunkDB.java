@@ -1,4 +1,7 @@
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ChunkDB {
@@ -38,6 +41,44 @@ public class ChunkDB {
         return numberOfChunksOfFile;
     }
 
+    boolean storeChunk(PeerInfo peer,String protocolVersion, String fileID, String chunkNo, String replicationDegree, byte[] chunkData){
+        if(fileID==null ||chunkNo==null || replicationDegree==null)
+            return false;
+        //check if peer has chunk already
+        if(hasChunk(peer,fileID,Integer.parseInt(chunkNo)))
+            return true;
+        try {
+            Random rand=new Random();
+            writeFileToPeerDir(fileID, chunkNo, chunkData, PeerInfo.peerID);
+            Thread.sleep(rand.nextInt(400-0) );
+        }catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    private void writeFileToPeerDir(String fileID, String chunkNo, byte[] chunkData,int peerId) throws IOException {
+        String filename = fileID + "_" + chunkNo;
+        FileOutputStream chunkFile = new FileOutputStream("./bin"+"/"+"Peer" +peerId+"/my_files"+"/"+filename);
+        chunkFile.write(chunkData);
+        chunkFile.close();
+    }
+
+
+    boolean hasChunk(PeerInfo peer,String fileID, Integer chunkNo) {
+        ArrayList<Chunk> a1 =peerHasChunks.get(peer);
+        if(a1==null)
+            return false;
+        for(int i=0;i<a1.size();i++){
+
+            if(a1.get(i).getID()==fileID && a1.get(i).getChunkNo()==chunkNo){
+                return true;
+            }
+        }
+        return false;
+    }
 
     public boolean searchFileIDExists(String fileID){
         int size_hash = peerHasChunks.size();

@@ -35,7 +35,7 @@ public class PeerInfo {
 
     private String path_base = "./bin/";
 
-    private PeerConnection connection;
+
 
     public PeerInfo(String serverId, String protocolVersion, String serviceAccessPoint, InetAddress mcAddr, int mcPort,
                     InetAddress mdbAddr, int mdbPort, InetAddress mdrAddr, int mdrPort) throws IOException{
@@ -43,7 +43,7 @@ public class PeerInfo {
         controlCh = new PeerConnection(mcAddr, mcPort, this); // = MC
         backupCh= new PeerConnection(mdbAddr, mdbPort, this);
         restoreCh = new PeerConnection(mdrAddr, mdrPort, this);
-
+        this.chunkDB=new ChunkDB();
         PeerRmi initiatorPeer = new PeerRmi(this);
 
         /*no rmi object error
@@ -165,7 +165,7 @@ public class PeerInfo {
         String chunkNo;
 
         switch(protocol){
-            case "PUTCHUNK":
+            case "PUTCHUNK":{
                 /*crlf e body */
                 if (header.length < 6){
                     System.out.println("Invalid input");
@@ -187,16 +187,24 @@ public class PeerInfo {
 
                 Message message_put = new Message("PUTCHUNK",versionID,senderID,fileID,chunkNo,replicationDeg_Num,body_byte);
                 System.out.println(message_put.toString());
-                byte[] b_message_put = message_put.getMsg();
-                try {
-                    connection.sendMessage(b_message_put);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
 
+                if(this.chunkDB.storeChunk(this,protocol,fileID,chunkNo,replicationDeg,message_put.getBody())){
+                    Message stored = new Message("STORED", versionID, senderID, fileID, chunkNo);
+                    ArrayList<Chunk> oldChunks=this.chunkDB.getPeerChunks(this.peerID);
+                    oldChunks.add(chunk);
+                    this.chunkDB.addPeerHasChunks(this.peerID,oldChunks);
+                    this.chunkDB.addnumberOfChunksOfFile(fileID,chunkNo_Num);
+                    try {
+                        backupCh.sendMessage(stored.getMsg());
+                    } catch (IOException e) {
+                        System.out.println("failed sending ACK STORED response to peer");
+                        e.printStackTrace();
+                    }
+                }
                 break;
-            case "DELETE":
-                if (header.length < 4){
+            }
+            case "DELETE": {
+                if (header.length < 4) {
                     System.out.println("Invalid input");
                     System.out.println(" DELETE <Version> <SenderId> <FileId> <ChunkNo> <CRLF><CRLF>");
                     break;
@@ -205,20 +213,39 @@ public class PeerInfo {
 
                 ArrayList<String> deleted_files = getChunkDB().deleteFile(fileID);
 
-                if(versionID.toString() != "1.0" && deleted_files != null) {
+                if (deleted_files != null) {
                     for (int i = 0; i < deleted_files.size(); i++) {
                         String cNo = deleted_files.get(i);
-                        Message message_delete = new Message("DELETE", versionID, senderID, fileID, cNo );
+                        Message message_delete = new Message("DELETE", versionID, senderID, fileID, cNo);
                         System.out.println(message_delete.toString());
                         byte[] b_message_delete = message_delete.getMsg();
                         try {
-                            connection.sendMessage(b_message_delete);
+                            controlCh.sendMessage(b_message_delete);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     }
                 }
                 break;
+            }
+            case "STORED":{
+
+                fileID = header[3];
+                chunkNo = header[4];
+                System.out.println(this.peerID + " has stored chunk no " + chunkNo+ " of file "+ fileID +"\n");
+                break;
+            }
+
+            case "GETCHUNK":{
+                fileID = header[3];
+                chunkNo = header[4];
+                break;
+            }
+            case "CHUNK":{
+                fileID = header[3];
+                chunkNo = header[4];
+                break;
+            }
             default:
                 System.out.println("Invalid option");
                 break;
