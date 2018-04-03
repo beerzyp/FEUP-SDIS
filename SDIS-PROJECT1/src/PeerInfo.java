@@ -173,25 +173,36 @@ public class PeerInfo {
                 if (header.length < 6){
                     System.out.println("Invalid input");
                     System.out.println(" PUTCHUNK <Version> <SenderId> <FileId> <ChunkNo> <ReplicationDeg> <CRLF><CRLF> <Body>");
+                    break;
                 }
 
                 fileID = header[3];
                 chunkNo = header[4];
                 String replicationDeg = header[5];
-                break;
-            case "GETCHUNK":
-                if (header.length < 5){
-                    System.out.println("Invalid input");
-                    System.out.println(" PUTCHUNK <Version> <SenderId> <FileId> <ChunkNo> <ReplicationDeg> <CRLF><CRLF> <Body>");
+                String controllers = header[6];
+                String body = header[7];
+
+                int chunkNo_Num = Integer.parseInt(chunkNo);
+                int replicationDeg_Num = Integer.parseInt(replicationDeg);
+                byte[] body_byte = body.getBytes();
+
+                Chunk chunk = new Chunk(fileID,chunkNo_Num,replicationDeg_Num,body_byte);
+
+                Message message_put = new Message("PUTCHUNK",versionID,senderID,fileID,chunkNo,replicationDeg_Num,body_byte);
+                System.out.println(message_put.toString());
+                byte[] b_message_put = message_put.getMsg();
+                try {
+                    connection.sendMessage(b_message_put);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
 
-                fileID = header[3];
-                chunkNo = header[4];
                 break;
             case "DELETE":
                 if (header.length < 4){
                     System.out.println("Invalid input");
                     System.out.println(" DELETE <Version> <SenderId> <FileId> <ChunkNo> <CRLF><CRLF>");
+                    break;
                 }
                 fileID = header[3];
 
@@ -200,11 +211,11 @@ public class PeerInfo {
                 if(versionID.toString() != "1.0" && deleted_files != null) {
                     for (int i = 0; i < deleted_files.size(); i++) {
                         String cNo = deleted_files.get(i);
-                        Message message = new Message("DELETE", versionID, senderID, fileID );
-                        System.out.println(message.toString());
-                        byte[] b_message = message.getMsg();
+                        Message message_delete = new Message("DELETE", versionID, senderID, fileID, cNo );
+                        System.out.println(message_delete.toString());
+                        byte[] b_message_delete = message_delete.getMsg();
                         try {
-                            connection.sendMessage(b_message);
+                            connection.sendMessage(b_message_delete);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

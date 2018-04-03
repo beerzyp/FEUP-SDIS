@@ -37,6 +37,16 @@ public class Message {
         this.finalMsg = join.getBytes();
     }
 
+    public Message(String msgType, String versionId, String senderID, String fileID, String chunkNo){
+        this.msgType=msgType;
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+        String join = String.join(" ",msgType, versionId, senderID, fileID, chunkNo, CRLF);
+
+        this.finalMsg = join.getBytes();
+    }
+
+
     public byte[] getMsg(){
         return this.finalMsg;
     }
