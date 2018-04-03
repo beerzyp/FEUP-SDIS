@@ -8,6 +8,8 @@ import java.util.ArrayList;
 public class PeerRmi extends UnicastRemoteObject implements RMI {
     private final PeerInfo peer;
 
+    private ChunkDB chunkDB;
+
     protected PeerRmi(PeerInfo peer) throws RemoteException {
         this.peer = peer;
         chunkDB = new ChunkDB();
@@ -92,7 +94,7 @@ public class PeerRmi extends UnicastRemoteObject implements RMI {
         Chunk newChunk = new Chunk("null",0,1,chunk);
         String fileId = newChunk.getSha256(filepath);
 
-        boolean fileExist = peer.getChunkDB().searchFileIDExists(fileId);
+        boolean fileExist = chunkDB.searchFileIDExists(fileId);
 
         if (fileExist == false){
             throw new IllegalArgumentException("File don't exist");
