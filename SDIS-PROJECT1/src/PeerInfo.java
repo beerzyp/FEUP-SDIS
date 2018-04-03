@@ -31,7 +31,11 @@ public class PeerInfo {
     public static int peerID = 0;
     private ArrayList<File> myHomeFiles;
 
+    private ChunkDB chunkDB;
+
     private String path_base = "./bin/";
+
+    private PeerConnection connection;
 
     public PeerInfo(String serverId, String protocolVersion, String serviceAccessPoint, InetAddress mcAddr, int mcPort,
                     InetAddress mdbAddr, int mdbPort, InetAddress mdrAddr, int mdrPort) throws IOException{
@@ -72,6 +76,10 @@ public class PeerInfo {
 
     public String getPath_base(){
         return path_base;
+    }
+
+    public ChunkDB getChunkDB(){
+        return chunkDB;
     }
 
     public void requestChunkBackup(String fileId, int chunkNo, int repDeg, byte[] currChunk){
@@ -183,10 +191,25 @@ public class PeerInfo {
             case "DELETE":
                 if (header.length < 4){
                     System.out.println("Invalid input");
-                    System.out.println(" PUTCHUNK <Version> <SenderId> <FileId> <ChunkNo> <ReplicationDeg> <CRLF><CRLF> <Body>");
+                    System.out.println(" DELETE <Version> <SenderId> <FileId> <ChunkNo> <CRLF><CRLF>");
                 }
                 fileID = header[3];
-                
+
+                ArrayList<String> deleted_files = getChunkDB().deleteFile(fileID);
+
+                if(versionID.toString() != "1.0" && deleted_files != null) {
+                    for (int i = 0; i < deleted_files.size(); i++) {
+                        String cNo = deleted_files.get(i);
+                        Message message = new Message("DELETE", versionID, senderID, fileID, cNo );
+                        System.out.println(message.toString());
+                        byte[] b_message = message.getMsg();
+                        try {
+                            connection.sendMessage(b_message);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
                 break;
             default:
                 System.out.println("Invalid option");
