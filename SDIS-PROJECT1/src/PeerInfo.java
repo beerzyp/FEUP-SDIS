@@ -200,7 +200,7 @@ public class PeerInfo {
                 if(versionID.toString() != "1.0" && deleted_files != null) {
                     for (int i = 0; i < deleted_files.size(); i++) {
                         String cNo = deleted_files.get(i);
-                        Message message = new Message("DELETE", versionID, senderID, fileID, cNo );
+                        Message message = new Message("DELETE", versionID, senderID, fileID );
                         System.out.println(message.toString());
                         byte[] b_message = message.getMsg();
                         try {
