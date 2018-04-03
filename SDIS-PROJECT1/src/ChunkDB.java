@@ -17,10 +17,14 @@ public class ChunkDB {
         this.peerHasChunks = new ConcurrentHashMap<>();
         this.numberOfChunksOfFile = new ConcurrentHashMap<>();
     }
-
+    public void addnumberOfChunksOfFile(String fileID,int num){
+        numberOfChunksOfFile.put(fileID,num);
+    }
     public void addPeerHasChunk(int peerID,Chunk chunk){
        peerHasChunk.put(peerID,chunk);
     }
+    public void addPeerHasChunks(int peerID,ArrayList<Chunk> chunks){peerHasChunks.put(peerID,chunks);}
+    public ArrayList<Chunk> getPeerChunks(int peerId){return peerHasChunks.get(peerId);}
 
     public ConcurrentHashMap<Integer,Chunk> getPeerHasChunk(){
         return peerHasChunk;
@@ -33,6 +37,7 @@ public class ChunkDB {
     public ConcurrentHashMap<String,Integer> getNumberOfChunksOfFile(){
         return numberOfChunksOfFile;
     }
+
 
     public boolean searchFileIDExists(String fileID){
         int size_hash = peerHasChunks.size();

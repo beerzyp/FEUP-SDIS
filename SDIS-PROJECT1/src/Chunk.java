@@ -4,7 +4,7 @@ public class Chunk {
     public static final int MAX_SIZE = 64000;
 
     private String chunkID;
-
+    private int chunkNo;
     private int replicationDegree;
 
     private byte[] data;
@@ -16,7 +16,9 @@ public class Chunk {
         this.data = data;
 
     }
-
+    public void setID(String fileID){this.chunkID=fileID;}
+    public void setChunkNumb(int chunkNumb){this.chunkNo=chunkNumb;}
+    public void setReplicationDegree(int replicationDegree){this.replicationDegree=replicationDegree;}
     public String getID() {
         return chunkID;
     }

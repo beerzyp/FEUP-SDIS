@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 /*
 http://cs.berry.edu/~nhamid/p2p/
@@ -24,7 +26,8 @@ public class PeerInfo {
     public PeerConnection controlCh;
     public PeerConnection backupCh;
     public PeerConnection restoreCh;
-    public ArrayList<Integer> chunks;
+    public ArrayList<String> chunksFileID;
+    public ArrayList<String> chunkFilePaths;
     public static int peerID = 0;
     private ArrayList<File> myHomeFiles;
 
@@ -36,11 +39,8 @@ public class PeerInfo {
         controlCh = new PeerConnection(mcAddr, mcPort, this); // = MC
         backupCh= new PeerConnection(mdbAddr, mdbPort, this);
         restoreCh = new PeerConnection(mdrAddr, mdrPort, this);
-        //each connection has 1 thread listener
-        //PeerRmi initPeer = new PeerRmi(this);
-        //initPeer.backup("./bin/Peer0/my_files/Arkanoid-Logo-New.jpg",3);
 
-       // PeerRmi initiatorPeer = new PeerRmi(this);
+        PeerRmi initiatorPeer = new PeerRmi(this);
         //initiatorPeer.backup("./bin/Peer0/my_files/img1.jpg",3);
         myHomeFiles = new ArrayList<File>(0);
         readFilesFromPeer();
@@ -83,11 +83,28 @@ public class PeerInfo {
             while(true){
                 int count=0;
                 while(count<5) {
+                    Random rand=new Random();
                     try {
-                        backupCh.sendMessage(finalMsg);
+                        if(backupCh.sendMessage(finalMsg))
+                            System.out.println("Backup delivered to peer");
+                        else{
+                            System.out.println("FAILED TO SEND PUTCHUNK MSG");
+                            if(count>5)
+                                break;
+                            else continue;
+                        }
+                        try {
+                            Thread.sleep(rand.nextInt(400-0) );
+                        } catch (InterruptedException ex) {
+                           ex.printStackTrace();
+                           continue;
+                        }
+
+
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+                    count++;
                 }
             }
         };

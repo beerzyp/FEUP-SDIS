@@ -3,6 +3,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 
 public class PeerRmi extends UnicastRemoteObject implements RMI {
     private final PeerInfo peer;
@@ -11,12 +12,13 @@ public class PeerRmi extends UnicastRemoteObject implements RMI {
 
     protected PeerRmi(PeerInfo peer) throws RemoteException {
         this.peer = peer;
+        chunkDB = new ChunkDB();
     }
 
     @Override
     public void backup(String filepath, int replicationDegree) throws IOException {
-        if (filepath == null || replicationDegree < 1) {
-            throw new IllegalArgumentException("Invalid arguments for backup");
+        if (filepath == null) {
+            throw new IllegalArgumentException("filepath does not exist");
         }
 
         FileInputStream file;
@@ -37,9 +39,13 @@ public class PeerRmi extends UnicastRemoteObject implements RMI {
 
         while (file.available() > 0) {
             readableBytes = file.available();
-
-            if (readableBytes > 64000)
-                chunk = new byte[64000];
+            newChunk = new Chunk("null",0,replicationDegree,chunk);
+            fileId = newChunk.getSha256(filepath);
+            newChunk.setID(fileId);
+            newChunk.setReplicationDegree(replicationDegree);
+            newChunk.setChunkNumb(chunkNo);
+            if (readableBytes > newChunk.MAX_SIZE)
+                chunk = new byte[newChunk.MAX_SIZE];
             else
                 chunk = new byte[readableBytes];
 
@@ -49,17 +55,23 @@ public class PeerRmi extends UnicastRemoteObject implements RMI {
             chunkNo++;
         }
 
-
-        if (readableBytes == 64000) {
+        newChunk = new Chunk("null",0,replicationDegree,chunk);
+        newChunk.setID(fileId);
+        newChunk.setReplicationDegree(replicationDegree);
+        newChunk.setChunkNumb(chunkNo);
+        if (readableBytes == newChunk.MAX_SIZE) {
             chunk = new byte[0];
             peer.requestChunkBackup(fileId, chunkNo, replicationDegree, chunk);
             chunkNo++;
         }
 
-        /*
-        peer.registerFile(fileId, replicationDegree, chunkNo, filepath);
-        register file in database
-         */
+        this.peer.chunksFileID.add(fileId);
+        this.peer.chunkFilePaths.add(filepath);
+        ArrayList<Chunk> oldChunks=this.chunkDB.getPeerChunks(this.peer.peerID);
+        oldChunks.add(newChunk);
+        this.chunkDB.addPeerHasChunks(this.peer.peerID,oldChunks);
+        this.chunkDB.addnumberOfChunksOfFile(fileId,chunkNo);
+
 
     }
 
